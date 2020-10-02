@@ -14,8 +14,6 @@ TODO: Implement after the package was published to npm.
 
 ## Usage
 
-#### Basic Usage
-
 ```js
 const CVSS = require("@turingpointde/cvss.js");
 
