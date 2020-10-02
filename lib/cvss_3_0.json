@@ -1,0 +1,75 @@
+{
+  "version": "3.0",
+  "definitions": [
+    {
+      "name": "Attack Vector",
+      "abbr": "AV",
+      "metrics": [
+        { "name": "Network", "abbr": "N", "numerical": 0.85 },
+        { "name": "Adjacent", "abbr": "A", "numerical": 0.62 },
+        { "name": "Local", "abbr": "L", "numerical": 0.55 },
+        { "name": "Physical", "abbr": "P", "numerical": 0.2 }
+      ]
+    },
+    {
+      "name": "Attack Complexity",
+      "abbr": "AC",
+      "metrics": [
+        { "name": "Low", "abbr": "L", "numerical": 0.77 },
+        { "name": "High", "abbr": "H", "numerical": 0.44 }
+      ]
+    },
+    {
+      "name": "Privileges Required",
+      "abbr": "PR",
+      "metrics": [
+        { "name": "None", "abbr": "N", "numerical": { "changed": 0.85, "unchanged": 0.85 } },
+        { "name": "Low", "abbr": "L", "numerical": { "changed": 0.68, "unchanged": 0.62 } },
+        { "name": "High", "abbr": "H", "numerical": { "changed": 0.5, "unchanged": 0.27 } }
+      ]
+    },
+    {
+      "name": "User Interaction",
+      "abbr": "UI",
+      "metrics": [
+        { "name": "None", "abbr": "N", "numerical": 0.85 },
+        { "name": "Required", "abbr": "R", "numerical": 0.62 }
+      ]
+    },
+    {
+      "name": "Scope",
+      "abbr": "S",
+      "metrics": [
+        { "name": "Unchanged", "abbr": "U" },
+        { "name": "Changed", "abbr": "C" }
+      ]
+    },
+    {
+      "name": "Confidentiality",
+      "abbr": "C",
+      "metrics": [
+        { "name": "None", "abbr": "N", "numerical": 0 },
+        { "name": "Low", "abbr": "L", "numerical": 0.22 },
+        { "name": "High", "abbr": "H", "numerical": 0.56 }
+      ]
+    },
+    {
+      "name": "Integrity",
+      "abbr": "I",
+      "metrics": [
+        { "name": "None", "abbr": "N", "numerical": 0 },
+        { "name": "Low", "abbr": "L", "numerical": 0.22 },
+        { "name": "High", "abbr": "H", "numerical": 0.56 }
+      ]
+    },
+    {
+      "name": "Availability",
+      "abbr": "A",
+      "metrics": [
+        { "name": "None", "abbr": "N", "numerical": 0 },
+        { "name": "Low", "abbr": "L", "numerical": 0.22 },
+        { "name": "High", "abbr": "H", "numerical": 0.56 }
+      ]
+    }
+  ]
+}

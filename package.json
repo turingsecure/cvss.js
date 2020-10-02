@@ -1,0 +1,22 @@
+{
+  "name": "@turingpointde/cvss.js",
+  "version": "1.0.0",
+  "description": "A tiny library to work with cvss vectors",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "lint": "npx eslint ./",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cvss",
+    "security"
+  ],
+  "author": "Fabian Kutsche",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^7.10.0",
+    "nodemon": "^2.0.4"
+  }
+}
