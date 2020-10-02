@@ -50,7 +50,7 @@ describe("Rating Tests", () => {
   });
 });
 
-describe("Rating Tests", () => {
+describe("Vector Object Tests", () => {
   it("Should return vector object with same key-value pairs", () => {
     const vector = CVSS("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H");
     expect(vector.getScore()).toBe(9.8);
