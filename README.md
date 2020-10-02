@@ -37,6 +37,7 @@ const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:N/I:L/A:L");
 console.log(vector.getScore()); // 4.4
 console.log(vector.getRating()); // Medium - Based on Qualitative Severity Rating Scale
 console.log(vector.vector); // CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:N/I:L/A:L
+console.log(vector.getVectorObject()); // {CVSS:"3.0", AV:"N", AC:"H", PR:"L", UI:"R", S:"C", C:"N", I:"L", A:"L"}
 ```
 
 ## Contributing
