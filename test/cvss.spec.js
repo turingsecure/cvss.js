@@ -49,3 +49,37 @@ describe("Rating Tests", () => {
     expect(vector.getRating()).toBe("Critical");
   });
 });
+
+describe("Rating Tests", () => {
+  it("Should return vector object with same key-value pairs", () => {
+    const vector = CVSS("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H");
+    expect(vector.getScore()).toBe(9.8);
+    expect(vector.getVectorObject()).toEqual({
+      CVSS: "3.0",
+      AV: "N",
+      AC: "L",
+      PR: "N",
+      UI: "N",
+      S: "U",
+      C: "H",
+      I: "H",
+      A: "H"
+    });
+  });
+
+  it("Should return vector object with same key-value pairs", () => {
+    const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:H/UI:R/S:U/C:H/I:N/A:N");
+    expect(vector.getScore()).toBe(4.2);
+    expect(vector.getVectorObject()).toEqual({
+      CVSS: "3.0",
+      AV: "N",
+      AC: "H",
+      PR: "H",
+      UI: "R",
+      S: "U",
+      C: "H",
+      I: "N",
+      A: "N"
+    });
+  });
+});
