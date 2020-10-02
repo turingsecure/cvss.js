@@ -6,7 +6,9 @@
   </a>
 </p>
 
-> A tiny library to work with CVSS vectors in JavaScript
+> A tiny library to work with [CVSS vectors](https://www.first.org/cvss/v3.0/specification-document) in JavaScript
+
+Note: We currently only support vectors from CVSS version 3.0.
 
 ## Installation
 
