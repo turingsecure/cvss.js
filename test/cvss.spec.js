@@ -15,8 +15,12 @@ describe("Score Tests", () => {
 
     const vector4 = CVSS("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N");
     expect(vector4.getScore()).toBe(8.2);
-  
-    //Temporal score tests
+    
+  });
+});
+
+describe("Temporal Tests", () => {
+  it("Should return the temporal score", () => {
     const vector5 = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
     expect(vector5.getTemporalScore()).toBe(4.7);
 
@@ -51,7 +55,7 @@ describe("Rating Tests", () => {
     expect(vector.getRating()).toBe("High");
   });
 
-  it("Should return 'Critcal' if the vector's score is >= 9.0 and <= 10.0", () => {
+  it("Should return 'Critical' if the vector's score is >= 9.0 and <= 10.0", () => {
     const vector = CVSS("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H");
     expect(vector.getScore()).toBe(9.8);
     expect(vector.getRating()).toBe("Critical");
