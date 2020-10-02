@@ -6,7 +6,7 @@
   </a>
 </p>
 
-> A tiny library to work with cvss vectors
+> A tiny library to work with CVSS vectors in JavaScript
 
 ## Installation
 
