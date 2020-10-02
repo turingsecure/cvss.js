@@ -10,12 +10,14 @@
 
 ## Installation
 
+Install the `@turingpointde/cvss.js` package:
+
 ```sh
 # use yarn or npm
 yarn add @turingpointde/cvss.js
 ```
 
-To use the library in your code run
+Import the library to use it in your code:
 
 ```js
 const CVSS = require("@turingpointde/cvss.js");
