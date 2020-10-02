@@ -8,9 +8,22 @@
 
 > A tiny library to work with cvss vectors
 
-## Install
+## Installation
 
-TODO: Implement after the package was published to npm.
+Install the `@turingpointde/cvss.js` package:
+
+```sh
+# use yarn or npm
+yarn add @turingpointde/cvss.js
+```
+
+Import the library to use it in your code:
+
+```js
+const CVSS = require("@turingpointde/cvss.js");
+// or
+import CVSS from "@turingpointde/cvss.js";
+```
 
 ## Usage
 
