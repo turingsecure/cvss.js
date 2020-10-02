@@ -15,7 +15,6 @@ describe("Score Tests", () => {
 
     const vector4 = CVSS("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N");
     expect(vector4.getScore()).toBe(8.2);
-    
   });
 });
 
@@ -26,7 +25,6 @@ describe("Temporal Tests", () => {
 
     const vector6 = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:F/RL:U/RC:X");
     expect(vector6.getTemporalScore()).toBe(5.4);
-    
   });
 });
 
@@ -59,5 +57,39 @@ describe("Rating Tests", () => {
     const vector = CVSS("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H");
     expect(vector.getScore()).toBe(9.8);
     expect(vector.getRating()).toBe("Critical");
+  });
+});
+
+describe("Vector Object Tests", () => {
+  it("Should return vector object with same key-value pairs", () => {
+    const vector = CVSS("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H");
+    expect(vector.getScore()).toBe(9.8);
+    expect(vector.getVectorObject()).toEqual({
+      CVSS: "3.0",
+      AV: "N",
+      AC: "L",
+      PR: "N",
+      UI: "N",
+      S: "U",
+      C: "H",
+      I: "H",
+      A: "H"
+    });
+  });
+
+  it("Should return vector object with same key-value pairs", () => {
+    const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:H/UI:R/S:U/C:H/I:N/A:N");
+    expect(vector.getScore()).toBe(4.2);
+    expect(vector.getVectorObject()).toEqual({
+      CVSS: "3.0",
+      AV: "N",
+      AC: "H",
+      PR: "H",
+      UI: "R",
+      S: "U",
+      C: "H",
+      I: "N",
+      A: "N"
+    });
   });
 });
