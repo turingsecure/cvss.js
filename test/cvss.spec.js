@@ -15,5 +15,13 @@ describe("Rating", () => {
 
     const vector4 = CVSS("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N");
     expect(vector4.getScore()).toBe(8.2);
+  
+    //Temporal score tests
+    const vector5 = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    expect(vector5.getTemporalScore()).toBe(4.7);
+
+    const vector6 = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:F/RL:U/RC:X");
+    expect(vector6.getTemporalScore()).toBe(5.4);
+    
   });
 });
