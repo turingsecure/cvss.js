@@ -1,4 +1,4 @@
-<h1 align="center">cvss.js by <a href="https://turingpoint.eu" target="_blank">turingpoint GmbH</a></h1>
+<h1 align="center">cvss.js by <a href="https://turingpoint.eu" target="_blank">turingpoint.</a></h1>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
