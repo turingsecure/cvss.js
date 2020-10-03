@@ -93,3 +93,137 @@ describe("Vector Object Tests", () => {
     });
   });
 });
+
+describe("Detailed Vector Object Tests", () => {
+  it("Should return detailed vector object with same key-value pairs and extra relevant values", () => {
+    const vector = CVSS("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H");
+    expect(vector.getScore()).toBe(9.8);
+    expect(vector.getDetailedVectorObject()).toEqual({
+      CVSS: '3.0',
+      metrics: {
+        AV: {
+          name: 'Attack Vector',
+          abbr: 'AV',
+          fullName: 'Attack Vector (AV)',
+          value: 'Network',
+          valueAbbr: 'N'
+        },
+        AC: {
+          name: 'Attack Complexity',
+          abbr: 'AC',
+          fullName: 'Attack Complexity (AC)',
+          value: 'Low',
+          valueAbbr: 'L'
+        },
+        PR: {
+          name: 'Privileges Required',
+          abbr: 'PR',
+          fullName: 'Privileges Required (PR)',
+          value: 'None',
+          valueAbbr: 'N'
+        },
+        UI: {
+          name: 'User Interaction',
+          abbr: 'UI',
+          fullName: 'User Interaction (UI)',
+          value: 'None',
+          valueAbbr: 'N'
+        },
+        S: {
+          name: 'Scope',
+          abbr: 'S',
+          fullName: 'Scope (S)',
+          value: 'Unchanged',
+          valueAbbr: 'U'
+        },
+        C: {
+          name: 'Confidentiality',
+          abbr: 'C',
+          fullName: 'Confidentiality (C)',
+          value: 'High',
+          valueAbbr: 'H'
+        },
+        I: {
+          name: 'Integrity',
+          abbr: 'I',
+          fullName: 'Integrity (I)',
+          value: 'High',
+          valueAbbr: 'H'
+        },
+        A: {
+          name: 'Availability',
+          abbr: 'A',
+          fullName: 'Availability (A)',
+          value: 'High',
+          valueAbbr: 'H'
+        }
+      }
+    });
+  });
+
+  it("Should return detailed vector object with same key-value pairs and extra relevant values", () => {
+    const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:H/UI:R/S:U/C:H/I:N/A:N");
+    expect(vector.getScore()).toBe(4.2);
+    expect(vector.getDetailedVectorObject()).toEqual({
+      CVSS: '3.0',
+      metrics: {
+        AV: {
+          name: 'Attack Vector',
+          abbr: 'AV',
+          fullName: 'Attack Vector (AV)',
+          value: 'Network',
+          valueAbbr: 'N'
+        },
+        AC: {
+          name: 'Attack Complexity',
+          abbr: 'AC',
+          fullName: 'Attack Complexity (AC)',
+          value: 'High',
+          valueAbbr: 'H'
+        },
+        PR: {
+          name: 'Privileges Required',
+          abbr: 'PR',
+          fullName: 'Privileges Required (PR)',
+          value: 'High',
+          valueAbbr: 'H'
+        },
+        UI: {
+          name: 'User Interaction',
+          abbr: 'UI',
+          fullName: 'User Interaction (UI)',
+          value: 'Required',
+          valueAbbr: 'R'
+        },
+        S: {
+          name: 'Scope',
+          abbr: 'S',
+          fullName: 'Scope (S)',
+          value: 'Unchanged',
+          valueAbbr: 'U'
+        },
+        C: {
+          name: 'Confidentiality',
+          abbr: 'C',
+          fullName: 'Confidentiality (C)',
+          value: 'High',
+          valueAbbr: 'H'
+        },
+        I: {
+          name: 'Integrity',
+          abbr: 'I',
+          fullName: 'Integrity (I)',
+          value: 'None',
+          valueAbbr: 'N'
+        },
+        A: {
+          name: 'Availability',
+          abbr: 'A',
+          fullName: 'Availability (A)',
+          value: 'None',
+          valueAbbr: 'N'
+        }
+      }
+    });
+  });
+});
