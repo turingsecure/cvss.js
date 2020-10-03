@@ -37,6 +37,7 @@ const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R"
 console.log(vector.getScore()); // 5.5
 console.log(vector.getTemporalScore()); // 4.7
 console.log(vector.getRating()); // Medium - Based on Qualitative Severity Rating Scale
+console.log(vector.isVectorValid()); // { message: 'This vector is valid', isValid: true }
 console.log(vector.vector); //  CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R
 console.log(vector.getVectorObject()); // { CVSS: "3.0", AV: "N", AC: "H", PR: "L", UI: "R", S: "C", C: "L", I: "L", A: "L", E: "U", RL: "T", RC: "R" }
 ```

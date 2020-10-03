@@ -93,3 +93,109 @@ describe("Vector Object Tests", () => {
     });
   });
 });
+
+describe("Check vector", () => {
+  it("must return invalid format for the vector", () => {
+    const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:TRC:R");
+    expect(JSON.stringify(vector.isVectorValid())).toBe(JSON.stringify(
+      {
+        message: 'The vector is not in the correct format', 
+        isValid: false
+      }
+    ));
+
+    const vector2 = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:F/RL:U/RC:X/");
+    expect(JSON.stringify(vector2.isVectorValid())).toBe(JSON.stringify(
+      {
+        message: 'The vector is not in the correct format', 
+        isValid: false
+      }
+    ));
+
+    const vector3 = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:F/RL:U/RC:X/test");
+    expect(JSON.stringify(vector3.isVectorValid())).toBe(JSON.stringify(
+      {
+        message: 'The vector is not in the correct format', 
+        isValid: false
+      }
+    ));
+  });
+  
+  it("must return repeated values in the vector", () => {
+    const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R/RC:R");
+    expect(JSON.stringify(vector.isVectorValid())).toBe(JSON.stringify(
+      {
+        message: 'Each parameter can only be passed once', 
+        isValid: false
+      }
+    ));
+
+    const vector2 = CVSS("CVSS:3.0/AV:N/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    expect(JSON.stringify(vector2.isVectorValid())).toBe(JSON.stringify(
+      {
+        message: 'Each parameter can only be passed once', 
+        isValid: false
+      }
+    ));
+
+    const vector3 = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    expect(JSON.stringify(vector3.isVectorValid())).toBe(JSON.stringify(
+      {
+        message: 'Each parameter can only be passed once', 
+        isValid: false
+      }
+    ));
+  });
+
+  it("checks if mandatory values have been passed", () => {
+    const vector = CVSS("CVSS:3.0/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    expect(JSON.stringify(vector.isVectorValid())).toBe(JSON.stringify(
+      {
+        message: 'Pass all mandatory parameters', 
+        isValid: false
+      }
+    ));
+
+    const vector2 = CVSS("CVSS:3.0/AV:N/AC:H/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    expect(JSON.stringify(vector2.isVectorValid())).toBe(JSON.stringify(
+      {
+        message: 'Pass all mandatory parameters', 
+        isValid: false
+      }
+    ));
+
+    const vector3 = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/E:U/RL:T/RC:R");
+    expect(JSON.stringify(vector3.isVectorValid())).toBe(JSON.stringify(
+      {
+        message: 'Pass all mandatory parameters', 
+        isValid: false
+      }
+    ));
+  });
+
+  it("all tests must have the vectors in valid format", () => {
+    const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    expect(JSON.stringify(vector.isVectorValid())).toBe(JSON.stringify(
+      {
+        message: 'This vector is valid', 
+        isValid: true
+      }
+    ));
+
+    const vector2 = CVSS("CVSS:3.0/AV:L/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    expect(JSON.stringify(vector2.isVectorValid())).toBe(JSON.stringify(
+      {
+        message: 'This vector is valid', 
+        isValid: true
+      }
+    ));
+
+    const vector3 = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:H/A:L/E:U/RL:T/RC:R");
+    expect(JSON.stringify(vector3.isVectorValid())).toBe(JSON.stringify(
+      {
+        message: 'This vector is valid', 
+        isValid: true
+      }
+    ));
+  });
+});
