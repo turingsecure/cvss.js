@@ -39,6 +39,89 @@ console.log(vector.getTemporalScore()); // 4.7
 console.log(vector.getRating()); // Medium - Based on Qualitative Severity Rating Scale
 console.log(vector.vector); //  CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R
 console.log(vector.getVectorObject()); // { CVSS: "3.0", AV: "N", AC: "H", PR: "L", UI: "R", S: "C", C: "L", I: "L", A: "L", E: "U", RL: "T", RC: "R" }
+console.log(vector.getDetailedVectorObject()); 
+/* { 
+  CVSS: '3.0',
+  metrics: {
+    AV: {
+      name: 'Attack Vector',
+      abbr: 'AV',
+      fullName: 'Attack Vector (AV)',
+      value: 'Network',
+      valueAbbr: 'N'
+    },
+    AC: {
+      name: 'Attack Complexity',
+      abbr: 'AC',
+      fullName: 'Attack Complexity (AC)',
+      value: 'High',
+      valueAbbr: 'H'
+    },
+    PR: {
+      name: 'Privileges Required',
+      abbr: 'PR',
+      fullName: 'Privileges Required (PR)',
+      value: 'Low',
+      valueAbbr: 'L'
+    },
+    UI: {
+      name: 'User Interaction',
+      abbr: 'UI',
+      fullName: 'User Interaction (UI)',
+      value: 'Required',
+      valueAbbr: 'R'
+    },
+    S: {
+      name: 'Scope',
+      abbr: 'S',
+      fullName: 'Scope (S)',
+      value: 'Changed',
+      valueAbbr: 'C'
+    },
+    C: {
+      name: 'Confidentiality',
+      abbr: 'C',
+      fullName: 'Confidentiality (C)',
+      value: 'Low',
+      valueAbbr: 'L'
+    },
+    I: {
+      name: 'Integrity',
+      abbr: 'I',
+      fullName: 'Integrity (I)',
+      value: 'Low',
+      valueAbbr: 'L'
+    },
+    A: {
+      name: 'Availability',
+      abbr: 'A',
+      fullName: 'Availability (A)',
+      value: 'Low',
+      valueAbbr: 'L'
+    },
+    E: {
+      name: 'Exploit Code Maturity',
+      abbr: 'E',
+      fullName: 'Exploit Code Maturity (E)',
+      value: 'Unproven',
+      valueAbbr: 'U'
+    },
+    RL: {
+      name: 'Remediation Level',
+      abbr: 'RL',
+      fullName: 'Remediation Level (RL)',
+      value: 'Temporary Fix',
+      valueAbbr: 'T'
+    },
+    RC: {
+      name: 'Report Confidence',
+      abbr: 'RC',
+      fullName: 'Report Confidence (RC)',
+      value: 'Reasonable',
+      valueAbbr: 'R'
+    }
+  }
+} */
 ```
 
 ## Contributing
