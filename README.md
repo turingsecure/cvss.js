@@ -1,6 +1,6 @@
 <h1 align="center">cvss.js by <a href="https://turingpoint.eu" target="_blank">turingpoint.</a></h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-1.2.0-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-1.3.0-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
   </a>
@@ -36,6 +36,7 @@ const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R"
 
 console.log(vector.getScore()); // 5.5
 console.log(vector.getTemporalScore()); // 4.7
+console.log(vector.getEnvironmentalScore()); // 9.3 - When specified
 console.log(vector.getRating()); // Medium - Based on Qualitative Severity Rating Scale
 console.log(vector.isValid); // true
 console.log(vector.vector); //  CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R

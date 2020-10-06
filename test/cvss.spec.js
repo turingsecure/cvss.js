@@ -28,6 +28,30 @@ describe("Temporal Tests", () => {
   });
 });
 
+describe("Environmental score tests", () => {
+  it("Should return the environmental score", () => {
+    const vector = CVSS(
+      "CVSS:3.0/AV:L/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:N/CR:M/IR:H/AR:M/MAV:N/MAC:H/MPR:L/MUI:N/MS:C/MC:N/MI:L/MA:L"
+    );
+    expect(vector.getEnvironmentalScore()).toBe(5.6);
+
+    const vector2 = CVSS(
+      "CVSS:3.0/AV:N/AC:H/PR:N/UI:R/S:C/C:H/I:L/A:L/E:P/RL:T/RC:U/CR:H/IR:M/AR:M/MAV:A/MAC:H/MPR:N/MUI:N/MS:U/MC:H/MI:H/MA:H"
+    );
+    expect(vector2.getEnvironmentalScore()).toBe(6.3);
+
+    const vector3 = CVSS(
+      "CVSS:3.0/AV:P/AC:H/PR:N/UI:R/S:C/C:L/I:L/A:H/E:H/RL:U/RC:R/CR:M/IR:M/AR:M/MAV:N/MAC:H/MPR:N/MUI:N/MS:C/MC:N/MI:N/MA:L"
+    );
+    expect(vector3.getEnvironmentalScore()).toBe(3.9);
+
+    const vector4 = CVSS(
+      "CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:U/C:H/I:H/A:H/RL:T/CR:L/IR:M/AR:H/MAV:N/MAC:L/MPR:N/MUI:R/MS:C/MC:H/MI:H/MA:H"
+    );
+    expect(vector4.getEnvironmentalScore()).toBe(9.3);
+  });
+});
+
 describe("Rating Tests", () => {
   it("Should return 'None' if the vector's score is 0", () => {
     const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:H/UI:R/S:U/C:N/I:N/A:N");
@@ -96,35 +120,53 @@ describe("Vector Object Tests", () => {
 
 describe("Check vector", () => {
   it("must return invalid format for the vector", () => {
-    const t1 = () => {CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:TRC:R");};
+    const t1 = () => {
+      CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:TRC:R");
+    };
     expect(t1).toThrow("The vector format is not valid!");
 
-    const t2 = () => {CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:F/RL:U/RC:X/");};
+    const t2 = () => {
+      CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:F/RL:U/RC:X/");
+    };
     expect(t2).toThrow("The vector format is not valid!");
 
-    const t3 = () => {CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:F/RL:U/RC:X/test");};
+    const t3 = () => {
+      CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:F/RL:U/RC:X/test");
+    };
     expect(t3).toThrow("The vector format is not valid!");
   });
-  
+
   it("must return repeated values in the vector", () => {
-    const t1 = () => {CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R/RC:R");};
+    const t1 = () => {
+      CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R/RC:R");
+    };
     expect(t1).toThrow("The vector format is not valid!");
 
-    const t2 = () => {CVSS("CVSS:3.0/AV:N/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");};
+    const t2 = () => {
+      CVSS("CVSS:3.0/AV:N/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    };
     expect(t2).toThrow("The vector format is not valid!");
 
-    const t3 = () => {CVSS("CVSS:3.0/AV:N/AC:H/PR:L/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");};
+    const t3 = () => {
+      CVSS("CVSS:3.0/AV:N/AC:H/PR:L/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    };
     expect(t3).toThrow("The vector format is not valid!");
   });
 
   it("checks if mandatory values have been passed", () => {
-    const t1 = () => {CVSS("CVSS:3.0/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");};
+    const t1 = () => {
+      CVSS("CVSS:3.0/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    };
     expect(t1).toThrow("The vector format is not valid!");
 
-    const t2 = () => {CVSS("CVSS:3.0/AV:N/AC:H/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");};
+    const t2 = () => {
+      CVSS("CVSS:3.0/AV:N/AC:H/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    };
     expect(t2).toThrow("The vector format is not valid!");
 
-    const t3 = () => {CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/E:U/RL:T/RC:R");};
+    const t3 = () => {
+      CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/E:U/RL:T/RC:R");
+    };
     expect(t3).toThrow("The vector format is not valid!");
   });
 
