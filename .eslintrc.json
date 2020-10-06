@@ -6,6 +6,7 @@
     "jest": true
   },
   "extends": "eslint:recommended",
+  "ignorePatterns": "dist/",
   "parserOptions": {
     "ecmaVersion": 12
   },
