@@ -94,6 +94,52 @@ describe("Vector Object Tests", () => {
   });
 });
 
+describe("Check vector", () => {
+  it("must return invalid format for the vector", () => {
+    const t1 = () => {CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:TRC:R");};
+    expect(t1).toThrow("The vector format is not valid!");
+
+    const t2 = () => {CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:F/RL:U/RC:X/");};
+    expect(t2).toThrow("The vector format is not valid!");
+
+    const t3 = () => {CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:F/RL:U/RC:X/test");};
+    expect(t3).toThrow("The vector format is not valid!");
+  });
+  
+  it("must return repeated values in the vector", () => {
+    const t1 = () => {CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R/RC:R");};
+    expect(t1).toThrow("The vector format is not valid!");
+
+    const t2 = () => {CVSS("CVSS:3.0/AV:N/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");};
+    expect(t2).toThrow("The vector format is not valid!");
+
+    const t3 = () => {CVSS("CVSS:3.0/AV:N/AC:H/PR:L/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");};
+    expect(t3).toThrow("The vector format is not valid!");
+  });
+
+  it("checks if mandatory values have been passed", () => {
+    const t1 = () => {CVSS("CVSS:3.0/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");};
+    expect(t1).toThrow("The vector format is not valid!");
+
+    const t2 = () => {CVSS("CVSS:3.0/AV:N/AC:H/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");};
+    expect(t2).toThrow("The vector format is not valid!");
+
+    const t3 = () => {CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/E:U/RL:T/RC:R");};
+    expect(t3).toThrow("The vector format is not valid!");
+  });
+
+  it("all tests must have the vectors in valid format", () => {
+    const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    expect(vector.isValid).toBe(true);
+
+    const vector2 = CVSS("CVSS:3.0/AV:L/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    expect(vector2.isValid).toBe(true);
+
+    const vector3 = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:H/A:L/E:U/RL:T/RC:R");
+    expect(vector3.isValid).toBe(true);
+  });
+});
+
 describe("Detailed Vector Object Tests", () => {
   it("Should return detailed vector object with same key-value pairs and extra relevant values", () => {
     const vector = CVSS("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H");
