@@ -2,8 +2,9 @@
   "name": "@turingpointde/cvss.js",
   "version": "1.3.0",
   "description": "A tiny library to work with cvss vectors",
-  "main": "index.js",
+  "main": "dist/production.min.js",
   "scripts": {
+    "build": "webpack",
     "dev": "nodemon index.js",
     "start": "node index.js",
     "lint": "npx eslint ./",
@@ -18,7 +19,9 @@
   "devDependencies": {
     "eslint": "^7.10.0",
     "jest": "^26.4.2",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
   },
   "repository": {
     "type": "git",
