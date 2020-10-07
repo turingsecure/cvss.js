@@ -83,6 +83,7 @@ console.log(vector.getDetailedObject); // see spoiler below
 
 <details>
   <summary>Output of vector.getDetailedObject</summary>
+  
   ```
     { 
   CVSS: '3.0',
