@@ -84,7 +84,7 @@ console.log(vector.getDetailedObject); // see spoiler below
 <details>
   <summary>Output of vector.getDetailedObject</summary>
 
-```
+```js
   {
     CVSS: '3.0',
     metrics: {
