@@ -48,6 +48,24 @@ const vector3 = CVSS(
 );
 ```
 
+It is possible to pass in an object as well
+
+```js
+const vectorObject = {
+  CVSS: "3.0",
+  AV: "N",
+  AC: "H",
+  PR: "H",
+  UI: "R",
+  S: "U",
+  C: "H",
+  I: "N",
+  A: "N"
+};
+
+console.log(CVSS(vectorObject).vector); // "CVSS:3.0/AV:N/AC:H/PR:H/UI:R/S:U/C:H/I:N/A:N"
+```
+
 To get the scores, simply call the respective function.
 
 ```js
