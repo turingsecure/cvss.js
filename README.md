@@ -27,6 +27,12 @@ const CVSS = require("@turingpointde/cvss.js");
 import CVSS from "@turingpointde/cvss.js";
 ```
 
+You can also use the library directly from the **CDN** (instead of yarn or npm):
+
+```html
+<script src="https://unpkg.com/@turingpointde/cvss.js@latest/dist/production.min.js"></script>
+```
+
 ## Usage
 
 After importing the library, the CVSS function must first be called with the vector as parameter.
