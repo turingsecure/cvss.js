@@ -84,11 +84,11 @@ The following functions are suitable for displaying the vector in a human-readab
 const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
 
 console.log(vector.getVectorObject()); // { CVSS: "3.0", AV: "N", AC: "H", PR: "L", UI: "R", S: "C", C: "L", I: "L", A: "L", E: "U", RL: "T", RC: "R" }
-console.log(vector.getDetailedObject()); // see spoiler below
+console.log(vector.getDetailedVectorObject()); // see spoiler below
 ```
 
 <details>
-  <summary>Output of vector.getDetailedObject</summary>
+  <summary>Output of vector.getDetailedVectorObject</summary>
 
 ```js
   {
