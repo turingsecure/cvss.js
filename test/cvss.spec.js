@@ -315,3 +315,51 @@ describe("Detailed Vector Object Tests", () => {
     });
   });
 });
+
+describe("Create vector from object", () => {
+  it("Should return the vector as string", () => {
+    const vectorObject = {
+      CVSS: "3.0",
+      AV: "N",
+      AC: "H",
+      PR: "H",
+      UI: "R",
+      S: "U",
+      C: "H",
+      I: "N",
+      A: "N"
+    };
+
+    expect(CVSS(vectorObject).vector).toBe("CVSS:3.0/AV:N/AC:H/PR:H/UI:R/S:U/C:H/I:N/A:N");
+  });
+
+  it("Should calculate the correct scores", () => {
+    const vectorObject = {
+      CVSS: "3.0",
+      AV: "N",
+      AC: "H",
+      PR: "L",
+      UI: "R",
+      S: "U",
+      C: "H",
+      I: "H",
+      A: "H",
+      RL: "T",
+      CR: "L",
+      IR: "M",
+      AR: "H",
+      MAV: "N",
+      MAC: "L",
+      MPR: "N",
+      MUI: "R",
+      MS: "C",
+      MC: "H",
+      MI: "H",
+      MA: "H"
+    };
+
+    expect(CVSS(vectorObject).getScore()).toBe(7.1);
+    expect(CVSS(vectorObject).getTemporalScore()).toBe(6.9);
+    expect(CVSS(vectorObject).getEnvironmentalScore()).toBe(9.3);
+  });
+});
