@@ -15,6 +15,22 @@ describe("Score Tests", () => {
 
     const vector4 = CVSS("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N");
     expect(vector4.getScore()).toBe(8.2);
+
+    const vector5 = CVSS({
+      A: "N",
+      AC: "L",
+      AV: "N",
+      C: "L",
+      CVSS: "3.0",
+      E: "X",
+      I: "H",
+      PR: "N",
+      RC: "X",
+      RL: "X",
+      S: "U",
+      UI: "N"
+    });
+    expect(vector5.getScore()).toBe(8.2);
   });
 });
 
@@ -25,6 +41,22 @@ describe("Temporal Tests", () => {
 
     const vector6 = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:F/RL:U/RC:X");
     expect(vector6.getTemporalScore()).toBe(5.4);
+
+    const vector7 = CVSS({
+      A: "N",
+      AC: "L",
+      AV: "N",
+      C: "L",
+      CVSS: "3.0",
+      E: "X",
+      I: "H",
+      PR: "N",
+      RC: "X",
+      RL: "X",
+      S: "U",
+      UI: "N"
+    });
+    expect(vector7.getTemporalScore()).toBe(8.2);
   });
 });
 
@@ -331,6 +363,23 @@ describe("Create vector from object", () => {
     };
 
     expect(CVSS(vectorObject).vector).toBe("CVSS:3.0/AV:N/AC:H/PR:H/UI:R/S:U/C:H/I:N/A:N");
+
+    const vectorObject1 = {
+      A: "N",
+      AC: "L",
+      AV: "N",
+      C: "L",
+      CVSS: "3.0",
+      E: "X",
+      I: "H",
+      PR: "N",
+      RC: "X",
+      RL: "X",
+      S: "U",
+      UI: "N"
+    };
+
+    expect(CVSS(vectorObject1).vector).toBe("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N/E:X/RL:X/RC:X");
   });
 
   it("Should calculate the correct scores", () => {
