@@ -101,7 +101,7 @@ The following functions are suitable for displaying the vector in a human-readab
 ```js
 const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
 
-console.log(vector.getVectorObject()); // { CVSS: "3.0", AV: "N", AC: "H", PR: "L", UI: "R", S: "C", C: "L", I: "L", A: "L", E: "U", RL: "T", RC: "R" }
+console.log(vector.getVectorObject()); // { CVSS: "3.0", AV: "N", AC: "H", PR: "L", UI: "R", S: "C", C: "L", I: "L", A: "L", E: "U", RL: "T", RC: "R", CR: "X", IR: "X", AR: "X", MAV: "X", MAC: "X", MPR: "X", MUI: "X", MS: "X" , MC: "X", MI: "X", MA: "X" }
 console.log(vector.getDetailedVectorObject()); // see spoiler below
 ```
 
