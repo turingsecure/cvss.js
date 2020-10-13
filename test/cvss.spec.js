@@ -37,10 +37,12 @@ describe("Score Tests", () => {
 describe("Version Tests", () => {
   it("Should return the Version", () => {
     const vector5 = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
-    expect(vector5.getVersion()).toBe("CVSS:3.0");
+    expect(vector5.getVersion()).toBe("3.0");
 
-    const vector6 = CVSS("CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
-    expect(vector6.getVersion()).toBe("CVSS:3.1");
+    const vector6 = () => {
+      CVSS("CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    };
+    expect(vector6).toThrow("The vector version 3.1 is not supported yet");
 
     const vector7 = () => {
       CVSS("CVSS:xyz/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
