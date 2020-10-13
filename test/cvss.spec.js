@@ -81,6 +81,11 @@ describe("Environmental score tests", () => {
       "CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:U/C:H/I:H/A:H/RL:T/CR:L/IR:M/AR:H/MAV:N/MAC:L/MPR:N/MUI:R/MS:C/MC:H/MI:H/MA:H"
     );
     expect(vector4.getEnvironmentalScore()).toBe(9.3);
+
+    const vector5 = CVSS(
+      "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N/E:P/RL:O/IR:M/MAV:A/MPR:N/MI:L"
+    );
+    expect(vector5.getEnvironmentalScore()).toBe(4.9);
   });
 
   it("Should return base score when all environmental metrics are not defined", () => {
