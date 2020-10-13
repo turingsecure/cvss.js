@@ -137,7 +137,21 @@ describe("Vector Object Tests", () => {
       S: "U",
       C: "H",
       I: "H",
-      A: "H"
+      A: "H",
+      E: "X",
+      RL: "X",
+      RC: "X",
+      CR: "X",
+      IR: "X",
+      AR: "X",
+      MAV: "X",
+      MAC: "X",
+      MPR: "X",
+      MUI: "X",
+      MS: "X",
+      MC: "X",
+      MI: "X",
+      MA: "X"
     });
   });
 
@@ -153,7 +167,21 @@ describe("Vector Object Tests", () => {
       S: "U",
       C: "H",
       I: "N",
-      A: "N"
+      A: "N",
+      E: "X",
+      RL: "X",
+      RC: "X",
+      CR: "X",
+      IR: "X",
+      AR: "X",
+      MAV: "X",
+      MAC: "X",
+      MPR: "X",
+      MUI: "X",
+      MS: "X",
+      MC: "X",
+      MI: "X",
+      MA: "X"
     });
   });
 });
