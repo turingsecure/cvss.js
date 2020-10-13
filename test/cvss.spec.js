@@ -39,10 +39,8 @@ describe("Version Tests", () => {
     const vector5 = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
     expect(vector5.getVersion()).toBe("3.0");
 
-    const vector6 = () => {
-      CVSS("CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
-    };
-    expect(vector6).toThrow("The vector version 3.1 is not supported yet");
+    const vector6 = CVSS("CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    expect(vector6.getVersion()).toBe("3.1");
 
     const vector7 = () => {
       CVSS("CVSS:xyz/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
@@ -55,6 +53,24 @@ describe("Version Tests", () => {
     expect(vector8).toThrow("The vector version is not valid");
   });
 });
+
+describe("Rounding Test", () => {
+  it("Should return the correct rounded number depending on version", () => {
+    const vector5 = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    expect(vector5.roundUp(0.35, 1)).toBe(0.4);
+
+    const vector6 = CVSS("CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    expect(vector6.roundUp(0.2+0.1, 1)).toBe(0.3);
+
+    const vector7 = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    expect(vector7.roundUp(0.2+0.1, 1)).toBe(0.4);
+
+    const vector8 = CVSS("CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    expect(vector8.roundUp(0.6, 1)).toBe(0.6);
+  });
+});
+
+
 
 describe("Temporal Tests", () => {
   it("Should return the temporal score", () => {
