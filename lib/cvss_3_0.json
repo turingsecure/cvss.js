@@ -157,7 +157,7 @@
       "name": "Modified Privileges Required",
       "abbr": "MPR",
       "metrics": [
-        { "name": "Not Defined", "abbr": "X", "numerical": 1 },
+        { "name": "Not Defined", "abbr": "X", "numerical": { "changed": 1, "unchanged": 1 } },
         { "name": "None", "abbr": "N", "numerical": { "changed": 0.85, "unchanged": 0.85 } },
         { "name": "Low", "abbr": "L", "numerical": { "changed": 0.68, "unchanged": 0.62 } },
         { "name": "High", "abbr": "H", "numerical": { "changed": 0.5, "unchanged": 0.27 } }
