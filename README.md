@@ -1,14 +1,12 @@
 <h1 align="center">cvss.js by <a href="https://turingpoint.eu" target="_blank">turingpoint.</a></h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-1.3.5-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-1.4.0-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
   </a>
 </p>
 
-> A tiny library to work with [CVSS vectors](https://www.first.org/cvss/v3.0/specification-document) in JavaScript
-
-Note: We currently only support vectors from CVSS version 3.0.
+> A tiny library to work with [CVSS vectors](https://www.first.org/cvss/v3.0/specification-document) (v3.0 and v3.1) in JavaScript. The Common Vulnerability Scoring System (CVSS) is a free and open standard. It is owned and managed by [FIRST.Org](https://first.org).
 
 ## Installation
 
