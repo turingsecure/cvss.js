@@ -85,13 +85,14 @@ const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:N/I:L/A:L");
 console.log(vector.getRating()); // Medium
 ```
 
-A few useful variables to work with the vectors:
+A few useful variables/functions to work with the vectors:
 
 ```js
 const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:N/I:L/A:L");
 
 console.log(vector.isValid); // true
 console.log(vector.vector); // CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:N/I:L/A:L
+console.log(vector.getVersion()); // "3.0"
 ```
 
 The following functions are suitable for displaying the vector in a human-readable form or for performing your own calculations with the vector
