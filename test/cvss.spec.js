@@ -34,6 +34,26 @@ describe("Score Tests", () => {
   });
 });
 
+describe("Version Tests", () => {
+  it("Should return the Version", () => {
+    const vector5 = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    expect(vector5.getVersion()).toBe("3.0");
+
+    const vector6 = CVSS("CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    expect(vector6.getVersion()).toBe("3.1");
+
+    const vector7 = () => {
+      CVSS("CVSS:xyz/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    };
+    expect(vector7).toThrow("The vector version is not valid");
+
+    const vector8 = () => {
+      CVSS("CVSS:/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    };
+    expect(vector8).toThrow("The vector version is not valid");
+  });
+});
+
 describe("Temporal Tests", () => {
   it("Should return the temporal score", () => {
     const vector5 = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
@@ -81,6 +101,29 @@ describe("Environmental score tests", () => {
       "CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:U/C:H/I:H/A:H/RL:T/CR:L/IR:M/AR:H/MAV:N/MAC:L/MPR:N/MUI:R/MS:C/MC:H/MI:H/MA:H"
     );
     expect(vector4.getEnvironmentalScore()).toBe(9.3);
+
+    const vector5 = CVSS(
+      "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N/E:P/RL:O/IR:M/MAV:A/MPR:N/MI:L"
+    );
+    expect(vector5.getEnvironmentalScore()).toBe(4.9);
+
+    const vector6 = CVSS(
+      "CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:U/C:L/I:L/A:L/CR:H/IR:H/MS:C/MC:H/MI:H/MA:H"
+    );
+    expect(vector6.getEnvironmentalScore()).toBe(8.0);
+    
+    const vector7 = CVSS(
+      "CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:U/C:L/I:L/A:L/CR:H/IR:H/MS:C/MC:H/MI:H/MA:H"
+    );
+    expect(vector7.getEnvironmentalScore()).toBe(8.1);
+  });
+
+  it("Should return base score when all environmental metrics are not defined", () => {
+    const vector = CVSS(
+      "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N/E:X/RL:X/RC:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MPR:X/MUI:X/MS:X/MC:X/MI:X/MA:X"
+    );
+
+    expect(vector.getEnvironmentalScore()).toBe(vector.getScore());
   });
 });
 
@@ -407,7 +450,9 @@ describe("Create vector from object", () => {
       UI: "N"
     };
 
-    expect(CVSS(vectorObject1).vector).toBe("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N/E:X/RL:X/RC:X");
+    expect(CVSS(vectorObject1).vector).toBe(
+      "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N/E:X/RL:X/RC:X"
+    );
   });
 
   it("Should calculate the correct scores", () => {
