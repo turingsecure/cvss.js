@@ -485,3 +485,16 @@ describe("Create vector from object", () => {
     expect(CVSS(vectorObject).getEnvironmentalScore()).toBe(9.3);
   });
 });
+
+describe("Clean Vector String Test", () => {
+  it("Should return the clean vector as string", () => {
+    expect(CVSS("CVSS:3.0/AV:L/AC:L/PR:H/UI:N/S:U/C:N/I:H/A:N/E:P/RL:W/RC:X/CR:X/IR:X/AR:M/MAV:A/MAC:X/MPR:X/MUI:N/MS:X/MC:X/MI:X/MA:X").getCleanVectorString())
+      .toBe("CVSS:3.0/AV:L/AC:L/PR:H/UI:N/S:U/C:N/I:H/A:N/E:P/RL:W/AR:M/MAV:A/MUI:N");
+
+    expect(CVSS("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N/E:X/RL:X/RC:X").getCleanVectorString())
+      .toBe("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N");
+
+    expect(CVSS("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N/E:X/RL:X/RC:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MPR:X/MUI:X/MS:X/MC:X/MI:X/MA:X").getCleanVectorString())
+      .toBe("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N");
+  });
+});
