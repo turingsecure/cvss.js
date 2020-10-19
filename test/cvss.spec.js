@@ -169,7 +169,7 @@ describe("Rating Tests", () => {
   });
 
   it("Should be able to discern individual ratings (base, temp, env) even if these don't match", () => {
-    const vector = CVSS("CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:N/E:U/RL:O/RC:U/CR:H/IR:H/AR:H/MAV:N/MAC:L/MPR:N/MUI:N/MS:U/MC:H/MI:H/MA:H")
+    const vector = CVSS("CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:N/E:U/RL:O/RC:U/CR:H/IR:H/AR:H/MAV:N/MAC:L/MPR:N/MUI:N/MS:U/MC:H/MI:H/MA:H");
     expect(vector.getScore()).toBe(4.3);
     expect(vector.getRating()).toBe("Medium");
     expect(vector.getTemporalScore()).toBe(3.5);
