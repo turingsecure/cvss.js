@@ -1,5 +1,4 @@
 const CVSS = require("../lib/cvss");
-const { getTemporalScore } = require("../lib/score");
 
 describe("Score Tests", () => {
   it("Should return the score", () => {
