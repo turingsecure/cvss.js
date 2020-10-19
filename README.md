@@ -98,9 +98,10 @@ console.log(vector.getVersion()); // "3.0"
 The following functions are suitable for displaying the vector in a human-readable form or for performing your own calculations with the vector
 
 ```js
-const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R/MAC:X/MUI:X/MA:X/MI:X");
 
 console.log(vector.getVectorObject()); // { CVSS: "3.0", AV: "N", AC: "H", PR: "L", UI: "R", S: "C", C: "L", I: "L", A: "L", E: "U", RL: "T", RC: "R", CR: "X", IR: "X", AR: "X", MAV: "X", MAC: "X", MPR: "X", MUI: "X", MS: "X" , MC: "X", MI: "X", MA: "X" }
+console.log(vector.getCleanVectorString()); // "CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R"
 console.log(vector.getDetailedVectorObject()); // see spoiler below
 ```
 
@@ -187,6 +188,34 @@ console.log(vector.getDetailedVectorObject()); // see spoiler below
         fullName: 'Report Confidence (RC)',
         value: 'Reasonable',
         valueAbbr: 'R'
+      },
+      MAC: {
+        name: 'Modified Attack Complexity',
+        abbr: 'MAC',
+        fullName: 'Modified Attack Complexity (MAC)',
+        value: 'Not Defined',
+        valueAbbr: 'X'
+      },
+      MUI: {
+        name: 'Modified User Interaction',
+        abbr: 'MUI',
+        fullName: 'Modified User Interaction (MUI)',
+        value: 'Not Defined',
+        valueAbbr: 'X'
+      },
+      MA: {
+        name: 'Modified Availability',
+        abbr: 'MA',
+        fullName: 'Modified Availability (MA)',
+        value: 'Not Defined',
+        valueAbbr: 'X'
+      },
+      MI: {
+        name: 'Modified Integrity',
+        abbr: 'MI',
+        fullName: 'Modified Integrity (MI)',
+        value: 'Not Defined',
+        valueAbbr: 'X'
       }
     }
   }
