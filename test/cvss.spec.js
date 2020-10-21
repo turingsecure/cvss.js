@@ -132,31 +132,52 @@ describe("Rating Tests", () => {
     const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:H/UI:R/S:U/C:N/I:N/A:N");
     expect(vector.getScore()).toBe(0);
     expect(vector.getRating()).toBe("None");
+    expect(vector.getTemporalRating()).toBe("None");
+    expect(vector.getEnvironmentalRating()).toBe("None");
   });
 
   it("Should return 'Low' if the vector's score is >= 0.1 and <= 3.9", () => {
     const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:H/UI:R/S:U/C:N/I:L/A:N");
     expect(vector.getScore()).toBe(2);
     expect(vector.getRating()).toBe("Low");
+    expect(vector.getTemporalRating()).toBe("Low");
+    expect(vector.getEnvironmentalRating()).toBe("Low");
   });
 
   it("Should return 'Medium' if the vector's score is >= 4.0 and <= 6.9", () => {
     const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:H/UI:R/S:U/C:H/I:N/A:N");
     expect(vector.getScore()).toBe(4.2);
     expect(vector.getRating()).toBe("Medium");
+    expect(vector.getTemporalRating()).toBe("Medium");
+    expect(vector.getEnvironmentalRating()).toBe("Medium");
   });
 
   it("Should return 'High' if the vector's score is >= 7.0 and <= 8.9", () => {
     const vector = CVSS("CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H");
     expect(vector.getScore()).toBe(8.8);
     expect(vector.getRating()).toBe("High");
+    expect(vector.getTemporalRating()).toBe("High");
+    expect(vector.getEnvironmentalRating()).toBe("High");
   });
 
   it("Should return 'Critical' if the vector's score is >= 9.0 and <= 10.0", () => {
     const vector = CVSS("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H");
     expect(vector.getScore()).toBe(9.8);
     expect(vector.getRating()).toBe("Critical");
+    expect(vector.getTemporalRating()).toBe("Critical");
+    expect(vector.getEnvironmentalRating()).toBe("Critical");
   });
+
+  it("Should be able to discern individual ratings (base, temp, env) even if these don't match", () => {
+    const vector = CVSS("CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:N/E:U/RL:O/RC:U/CR:H/IR:H/AR:H/MAV:N/MAC:L/MPR:N/MUI:N/MS:U/MC:H/MI:H/MA:H");
+    expect(vector.getScore()).toBe(4.3);
+    expect(vector.getRating()).toBe("Medium");
+    expect(vector.getTemporalScore()).toBe(3.5);
+    expect(vector.getTemporalRating()).toBe("Low");
+    expect(vector.getEnvironmentalScore()).toBe(7.8);
+    expect(vector.getEnvironmentalRating()).toBe("High");
+  });
+
 });
 
 describe("Vector Object Tests", () => {

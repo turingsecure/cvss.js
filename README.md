@@ -83,6 +83,8 @@ Sometimes it is useful to get a qualitative rating of a score
 const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:N/I:L/A:L");
 
 console.log(vector.getRating()); // Medium
+console.log(vector.getTemporalRating()); // Medium
+console.log(vector.getEnvironmentalRating()); // Low
 ```
 
 A few useful variables/functions to work with the vectors:
