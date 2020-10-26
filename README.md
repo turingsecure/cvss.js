@@ -1,6 +1,6 @@
 <h1 align="center">cvss.js by <a href="https://turingpoint.eu" target="_blank">turingpoint.</a></h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-1.4.1-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-1.4.2-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
   </a>
@@ -100,7 +100,9 @@ console.log(vector.getVersion()); // "3.0"
 The following functions are suitable for displaying the vector in a human-readable form or for performing your own calculations with the vector
 
 ```js
-const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R/MAC:X/MUI:X/MA:X/MI:X");
+const vector = CVSS(
+  "CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R/MAC:X/MUI:X/MA:X/MI:X"
+);
 
 console.log(vector.getVectorObject()); // { CVSS: "3.0", AV: "N", AC: "H", PR: "L", UI: "R", S: "C", C: "L", I: "L", A: "L", E: "U", RL: "T", RC: "R", CR: "X", IR: "X", AR: "X", MAV: "X", MAC: "X", MPR: "X", MUI: "X", MS: "X" , MC: "X", MI: "X", MA: "X" }
 console.log(vector.getCleanVectorString()); // "CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R"
