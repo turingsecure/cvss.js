@@ -111,11 +111,16 @@ describe("Environmental score tests", () => {
       "CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:U/C:L/I:L/A:L/CR:H/IR:H/MS:C/MC:H/MI:H/MA:H"
     );
     expect(vector6.getEnvironmentalScore()).toBe(8.0);
-    
+
     const vector7 = CVSS(
       "CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:U/C:L/I:L/A:L/CR:H/IR:H/MS:C/MC:H/MI:H/MA:H"
     );
     expect(vector7.getEnvironmentalScore()).toBe(8.1);
+
+    const vector8 = CVSS(
+      "CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:C/C:L/I:L/A:L/E:X/RL:X/RC:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MPR:X/MUI:X/MS:X/MC:X/MI:X/MA:X"
+    );
+    expect(vector8.getEnvironmentalScore()).toBe(6.5);
   });
 
   it("Should return base score when all environmental metrics are not defined", () => {
@@ -169,7 +174,9 @@ describe("Rating Tests", () => {
   });
 
   it("Should be able to discern individual ratings (base, temp, env) even if these don't match", () => {
-    const vector = CVSS("CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:N/E:U/RL:O/RC:U/CR:H/IR:H/AR:H/MAV:N/MAC:L/MPR:N/MUI:N/MS:U/MC:H/MI:H/MA:H");
+    const vector = CVSS(
+      "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:N/E:U/RL:O/RC:U/CR:H/IR:H/AR:H/MAV:N/MAC:L/MPR:N/MUI:N/MS:U/MC:H/MI:H/MA:H"
+    );
     expect(vector.getScore()).toBe(4.3);
     expect(vector.getRating()).toBe("Medium");
     expect(vector.getTemporalScore()).toBe(3.5);
@@ -177,7 +184,6 @@ describe("Rating Tests", () => {
     expect(vector.getEnvironmentalScore()).toBe(7.8);
     expect(vector.getEnvironmentalRating()).toBe("High");
   });
-
 });
 
 describe("Vector Object Tests", () => {
@@ -509,13 +515,20 @@ describe("Create vector from object", () => {
 
 describe("Clean Vector String Test", () => {
   it("Should return the clean vector as string", () => {
-    expect(CVSS("CVSS:3.0/AV:L/AC:L/PR:H/UI:N/S:U/C:N/I:H/A:N/E:P/RL:W/RC:X/CR:X/IR:X/AR:M/MAV:A/MAC:X/MPR:X/MUI:N/MS:X/MC:X/MI:X/MA:X").getCleanVectorString())
-      .toBe("CVSS:3.0/AV:L/AC:L/PR:H/UI:N/S:U/C:N/I:H/A:N/E:P/RL:W/AR:M/MAV:A/MUI:N");
+    expect(
+      CVSS(
+        "CVSS:3.0/AV:L/AC:L/PR:H/UI:N/S:U/C:N/I:H/A:N/E:P/RL:W/RC:X/CR:X/IR:X/AR:M/MAV:A/MAC:X/MPR:X/MUI:N/MS:X/MC:X/MI:X/MA:X"
+      ).getCleanVectorString()
+    ).toBe("CVSS:3.0/AV:L/AC:L/PR:H/UI:N/S:U/C:N/I:H/A:N/E:P/RL:W/AR:M/MAV:A/MUI:N");
 
-    expect(CVSS("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N/E:X/RL:X/RC:X").getCleanVectorString())
-      .toBe("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N");
+    expect(
+      CVSS("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N/E:X/RL:X/RC:X").getCleanVectorString()
+    ).toBe("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N");
 
-    expect(CVSS("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N/E:X/RL:X/RC:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MPR:X/MUI:X/MS:X/MC:X/MI:X/MA:X").getCleanVectorString())
-      .toBe("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N");
+    expect(
+      CVSS(
+        "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N/E:X/RL:X/RC:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MPR:X/MUI:X/MS:X/MC:X/MI:X/MA:X"
+      ).getCleanVectorString()
+    ).toBe("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N");
   });
 });
