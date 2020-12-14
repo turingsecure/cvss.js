@@ -1,6 +1,6 @@
 {
   "name": "@turingpointde/cvss.js",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "A tiny library to work with cvss vectors",
   "scripts": {
     "build": "webpack",
