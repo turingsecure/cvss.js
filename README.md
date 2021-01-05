@@ -234,5 +234,5 @@ Feel free to check out the [issues page](https://github.com/turingpointde/cvss.j
 
 ## License
 
-Copyright © 2020 [turingpoint GmbH](https://turingpoint.eu).
+Copyright © 2021 [turingpoint GmbH](https://turingpoint.eu).
 This project is [MIT](LICENSE) licensed.
