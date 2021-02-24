@@ -16,6 +16,12 @@ describe("Score Tests", () => {
     const vector4 = CVSS("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N");
     expect(vector4.getScore()).toBe(8.2);
 
+    const vector6 = CVSS("CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:H");
+
+    expect(vector6.getScore()).toBe(9.6);
+    expect(vector6.getTemporalScore()).toBe(9.6);
+    expect(vector6.getEnvironmentalScore()).toBe(9.7);
+
     const vector5 = CVSS({
       A: "N",
       AC: "L",
