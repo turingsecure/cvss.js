@@ -1,6 +1,6 @@
 <h1 align="center">cvss.js by <a href="https://turingpoint.eu" target="_blank">turingpoint.</a></h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-1.4.5-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-1.4.6-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
   </a>
@@ -20,9 +20,9 @@ yarn add @turingpointde/cvss.js
 Import the library to use it in your code:
 
 ```js
-const CVSS = require("@turingpointde/cvss.js");
+const CVSS = require('@turingpointde/cvss.js');
 // or
-import CVSS from "@turingpointde/cvss.js";
+import CVSS from '@turingpointde/cvss.js';
 ```
 
 You can also use the library directly from the **CDN** (instead of yarn or npm):
@@ -37,12 +37,14 @@ After importing the library, the CVSS function must first be called with the vec
 
 ```js
 // Vector only with base score
-const vector1 = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:N/I:L/A:L");
+const vector1 = CVSS('CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:N/I:L/A:L');
 // Vector with temporal score
-const vector2 = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+const vector2 = CVSS(
+  'CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R',
+);
 // Vector with environmental score
 const vector3 = CVSS(
-  "CVSS:3.0/AV:L/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:N/CR:M/IR:H/AR:M/MAV:N/MAC:H/MPR:L/MUI:N/MS:C/MC:N/MI:L/MA:L"
+  'CVSS:3.0/AV:L/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:N/CR:M/IR:H/AR:M/MAV:N/MAC:H/MPR:L/MUI:N/MS:C/MC:N/MI:L/MA:L',
 );
 ```
 
@@ -50,15 +52,15 @@ It is possible to pass in an object as well
 
 ```js
 const vectorObject = {
-  CVSS: "3.0",
-  AV: "N",
-  AC: "H",
-  PR: "H",
-  UI: "R",
-  S: "U",
-  C: "H",
-  I: "N",
-  A: "N"
+  CVSS: '3.0',
+  AV: 'N',
+  AC: 'H',
+  PR: 'H',
+  UI: 'R',
+  S: 'U',
+  C: 'H',
+  I: 'N',
+  A: 'N',
 };
 
 console.log(CVSS(vectorObject).vector); // "CVSS:3.0/AV:N/AC:H/PR:H/UI:R/S:U/C:H/I:N/A:N"
@@ -69,7 +71,7 @@ To get the scores, simply call the respective function.
 ```js
 // Create a vector
 const vector = CVSS(
-  "CVSS:3.0/AV:L/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:N/E:P/RL:O/CR:M/IR:H/AR:M/MAV:N/MAC:H/MPR:L/MUI:N/MS:C/MC:N/MI:L/MA:L"
+  'CVSS:3.0/AV:L/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:N/E:P/RL:O/CR:M/IR:H/AR:M/MAV:N/MAC:H/MPR:L/MUI:N/MS:C/MC:N/MI:L/MA:L',
 );
 
 console.log(vector.getScore()); // 3.6
@@ -80,7 +82,7 @@ console.log(vector.getEnvironmentalScore()); // 5.1
 Sometimes it is useful to get a qualitative rating of a score
 
 ```js
-const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:N/I:L/A:L");
+const vector = CVSS('CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:N/I:L/A:L');
 
 console.log(vector.getRating()); // Medium
 console.log(vector.getTemporalRating()); // Medium
@@ -90,7 +92,7 @@ console.log(vector.getEnvironmentalRating()); // Low
 A few useful variables/functions to work with the vectors:
 
 ```js
-const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:N/I:L/A:L");
+const vector = CVSS('CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:N/I:L/A:L');
 
 console.log(vector.isValid); // true
 console.log(vector.vector); // CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:N/I:L/A:L
@@ -101,7 +103,7 @@ The following functions are suitable for displaying the vector in a human-readab
 
 ```js
 const vector = CVSS(
-  "CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R/MAC:X/MUI:X/MA:X/MI:X"
+  'CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R/MAC:X/MUI:X/MA:X/MI:X',
 );
 
 console.log(vector.getVectorObject()); // { CVSS: "3.0", AV: "N", AC: "H", PR: "L", UI: "R", S: "C", C: "L", I: "L", A: "L", E: "U", RL: "T", RC: "R", CR: "X", IR: "X", AR: "X", MAV: "X", MAC: "X", MPR: "X", MUI: "X", MS: "X" , MC: "X", MI: "X", MA: "X" }
