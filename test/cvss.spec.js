@@ -34,7 +34,7 @@ describe("Score Tests", () => {
       RC: "X",
       RL: "X",
       S: "U",
-      UI: "N"
+      UI: "N",
     });
     expect(vector5.getScore()).toBe(8.2);
   });
@@ -42,10 +42,14 @@ describe("Score Tests", () => {
 
 describe("Version Tests", () => {
   it("Should return the Version", () => {
-    const vector5 = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    const vector5 = CVSS(
+      "CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R"
+    );
     expect(vector5.getVersion()).toBe("3.0");
 
-    const vector6 = CVSS("CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    const vector6 = CVSS(
+      "CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R"
+    );
     expect(vector6.getVersion()).toBe("3.1");
 
     const vector7 = () => {
@@ -62,10 +66,14 @@ describe("Version Tests", () => {
 
 describe("Temporal Tests", () => {
   it("Should return the temporal score", () => {
-    const vector5 = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    const vector5 = CVSS(
+      "CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R"
+    );
     expect(vector5.getTemporalScore()).toBe(4.7);
 
-    const vector6 = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:F/RL:U/RC:X");
+    const vector6 = CVSS(
+      "CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:F/RL:U/RC:X"
+    );
     expect(vector6.getTemporalScore()).toBe(5.4);
 
     const vector7 = CVSS({
@@ -80,7 +88,7 @@ describe("Temporal Tests", () => {
       RC: "X",
       RL: "X",
       S: "U",
-      UI: "N"
+      UI: "N",
     });
     expect(vector7.getTemporalScore()).toBe(8.2);
   });
@@ -219,7 +227,7 @@ describe("Vector Object Tests", () => {
       MS: "X",
       MC: "X",
       MI: "X",
-      MA: "X"
+      MA: "X",
     });
   });
 
@@ -249,7 +257,7 @@ describe("Vector Object Tests", () => {
       MS: "X",
       MC: "X",
       MI: "X",
-      MA: "X"
+      MA: "X",
     });
   });
 });
@@ -307,13 +315,19 @@ describe("Check vector", () => {
   });
 
   it("all tests must have the vectors in valid format", () => {
-    const vector = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    const vector = CVSS(
+      "CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R"
+    );
     expect(vector.isValid).toBe(true);
 
-    const vector2 = CVSS("CVSS:3.0/AV:L/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R");
+    const vector2 = CVSS(
+      "CVSS:3.0/AV:L/AC:H/PR:L/UI:R/S:C/C:L/I:L/A:L/E:U/RL:T/RC:R"
+    );
     expect(vector2.isValid).toBe(true);
 
-    const vector3 = CVSS("CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:H/A:L/E:U/RL:T/RC:R");
+    const vector3 = CVSS(
+      "CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:C/C:L/I:H/A:L/E:U/RL:T/RC:R"
+    );
     expect(vector3.isValid).toBe(true);
   });
 });
@@ -330,58 +344,58 @@ describe("Detailed Vector Object Tests", () => {
           abbr: "AV",
           fullName: "Attack Vector (AV)",
           value: "Network",
-          valueAbbr: "N"
+          valueAbbr: "N",
         },
         AC: {
           name: "Attack Complexity",
           abbr: "AC",
           fullName: "Attack Complexity (AC)",
           value: "Low",
-          valueAbbr: "L"
+          valueAbbr: "L",
         },
         PR: {
           name: "Privileges Required",
           abbr: "PR",
           fullName: "Privileges Required (PR)",
           value: "None",
-          valueAbbr: "N"
+          valueAbbr: "N",
         },
         UI: {
           name: "User Interaction",
           abbr: "UI",
           fullName: "User Interaction (UI)",
           value: "None",
-          valueAbbr: "N"
+          valueAbbr: "N",
         },
         S: {
           name: "Scope",
           abbr: "S",
           fullName: "Scope (S)",
           value: "Unchanged",
-          valueAbbr: "U"
+          valueAbbr: "U",
         },
         C: {
           name: "Confidentiality",
           abbr: "C",
           fullName: "Confidentiality (C)",
           value: "High",
-          valueAbbr: "H"
+          valueAbbr: "H",
         },
         I: {
           name: "Integrity",
           abbr: "I",
           fullName: "Integrity (I)",
           value: "High",
-          valueAbbr: "H"
+          valueAbbr: "H",
         },
         A: {
           name: "Availability",
           abbr: "A",
           fullName: "Availability (A)",
           value: "High",
-          valueAbbr: "H"
-        }
-      }
+          valueAbbr: "H",
+        },
+      },
     });
   });
 
@@ -396,58 +410,58 @@ describe("Detailed Vector Object Tests", () => {
           abbr: "AV",
           fullName: "Attack Vector (AV)",
           value: "Network",
-          valueAbbr: "N"
+          valueAbbr: "N",
         },
         AC: {
           name: "Attack Complexity",
           abbr: "AC",
           fullName: "Attack Complexity (AC)",
           value: "High",
-          valueAbbr: "H"
+          valueAbbr: "H",
         },
         PR: {
           name: "Privileges Required",
           abbr: "PR",
           fullName: "Privileges Required (PR)",
           value: "High",
-          valueAbbr: "H"
+          valueAbbr: "H",
         },
         UI: {
           name: "User Interaction",
           abbr: "UI",
           fullName: "User Interaction (UI)",
           value: "Required",
-          valueAbbr: "R"
+          valueAbbr: "R",
         },
         S: {
           name: "Scope",
           abbr: "S",
           fullName: "Scope (S)",
           value: "Unchanged",
-          valueAbbr: "U"
+          valueAbbr: "U",
         },
         C: {
           name: "Confidentiality",
           abbr: "C",
           fullName: "Confidentiality (C)",
           value: "High",
-          valueAbbr: "H"
+          valueAbbr: "H",
         },
         I: {
           name: "Integrity",
           abbr: "I",
           fullName: "Integrity (I)",
           value: "None",
-          valueAbbr: "N"
+          valueAbbr: "N",
         },
         A: {
           name: "Availability",
           abbr: "A",
           fullName: "Availability (A)",
           value: "None",
-          valueAbbr: "N"
-        }
-      }
+          valueAbbr: "N",
+        },
+      },
     });
   });
 });
@@ -463,10 +477,12 @@ describe("Create vector from object", () => {
       S: "U",
       C: "H",
       I: "N",
-      A: "N"
+      A: "N",
     };
 
-    expect(CVSS(vectorObject).vector).toBe("CVSS:3.0/AV:N/AC:H/PR:H/UI:R/S:U/C:H/I:N/A:N");
+    expect(CVSS(vectorObject).vector).toBe(
+      "CVSS:3.0/AV:N/AC:H/PR:H/UI:R/S:U/C:H/I:N/A:N"
+    );
 
     const vectorObject1 = {
       A: "N",
@@ -480,7 +496,7 @@ describe("Create vector from object", () => {
       RC: "X",
       RL: "X",
       S: "U",
-      UI: "N"
+      UI: "N",
     };
 
     expect(CVSS(vectorObject1).vector).toBe(
@@ -510,7 +526,7 @@ describe("Create vector from object", () => {
       MS: "C",
       MC: "H",
       MI: "H",
-      MA: "H"
+      MA: "H",
     };
 
     expect(CVSS(vectorObject).getScore()).toBe(7.1);
@@ -525,10 +541,14 @@ describe("Clean Vector String Test", () => {
       CVSS(
         "CVSS:3.0/AV:L/AC:L/PR:H/UI:N/S:U/C:N/I:H/A:N/E:P/RL:W/RC:X/CR:X/IR:X/AR:M/MAV:A/MAC:X/MPR:X/MUI:N/MS:X/MC:X/MI:X/MA:X"
       ).getCleanVectorString()
-    ).toBe("CVSS:3.0/AV:L/AC:L/PR:H/UI:N/S:U/C:N/I:H/A:N/E:P/RL:W/AR:M/MAV:A/MUI:N");
+    ).toBe(
+      "CVSS:3.0/AV:L/AC:L/PR:H/UI:N/S:U/C:N/I:H/A:N/E:P/RL:W/AR:M/MAV:A/MUI:N"
+    );
 
     expect(
-      CVSS("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N/E:X/RL:X/RC:X").getCleanVectorString()
+      CVSS(
+        "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N/E:X/RL:X/RC:X"
+      ).getCleanVectorString()
     ).toBe("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N");
 
     expect(
@@ -536,5 +556,15 @@ describe("Clean Vector String Test", () => {
         "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N/E:X/RL:X/RC:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MPR:X/MUI:X/MS:X/MC:X/MI:X/MA:X"
       ).getCleanVectorString()
     ).toBe("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N");
+  });
+});
+
+describe("Update Vector Value Test", () => {
+  it("Should return the updated vector as string", () => {
+    expect(
+      CVSS(
+        "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N/RL:X/RC:X"
+      ).updateVectorValue("AV", "L")
+    ).toBe("CVSS:3.0/AV:L/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N");
   });
 });
