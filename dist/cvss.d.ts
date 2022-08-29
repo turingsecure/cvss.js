@@ -16,5 +16,6 @@ declare function CVSS(vector: string): {
     getDetailedVectorObject: () => any;
     getVersion: () => string;
     getCleanVectorString: () => string;
+    updateVectorValue: (metric: string, value: string) => string;
     isValid: true;
 };

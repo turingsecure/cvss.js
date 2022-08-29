@@ -45,6 +45,7 @@ export function findMetricValue(abbr: string, vectorObject: any): any;
  * @returns {String} returns one of the five possible ratings
  */
 export function getRating(score: any): string;
+export function updateVectorValue(vector: any, metric: any, value: any): string;
 /**
  * Checks whether the vector passed is valid
  *
