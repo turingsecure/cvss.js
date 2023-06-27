@@ -77,6 +77,8 @@ const vector = CVSS(
 console.log(vector.getScore()); // 3.6
 console.log(vector.getTemporalScore()); // 3.3
 console.log(vector.getEnvironmentalScore()); // 5.1
+console.log(vector.getImpactSubScore()) // 2.5
+console.log(vector.getExploitabilitySubScore()) // 1
 ```
 
 Sometimes it is useful to get a qualitative rating of a score
