@@ -568,3 +568,43 @@ describe("Update Vector Value Test", () => {
     ).toBe("CVSS:3.0/AV:L/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N");
   });
 });
+
+describe("Impact Sub Score Tests", () => {
+  it("Should return the impact sub score equal 6.0", () => {
+    const vector = CVSS("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H");
+
+    expect(vector.getImpactSubScore()).toBe(6.0);
+  });
+
+  it("Should return the impact sub score equal 5.9", () => {
+    const vector = CVSS("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H");
+
+    expect(vector.getImpactSubScore()).toBe(5.9);
+  });
+
+  it("Should return the impact sub score equal 0", () => {
+    const vector = CVSS("CVSS:3.0/AV:P/AC:H/PR:H/UI:R/S:U/C:N/I:N/A:N");
+
+    expect(vector.getImpactSubScore()).toBe(0);
+  });
+});
+
+describe("Exploitability sub score Tests", () => {
+  it("Should return the Exploitability sub score equal 3.9", () => {
+    const vector = CVSS("CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H");
+
+    expect(vector.getExploitabilitySubScore()).toBe(3.9);
+  });
+
+  it("Should return the Exploitability sub score equal 0.9", () => {
+    const vector = CVSS("CVSS:3.0/AV:A/AC:H/PR:L/UI:R/S:C/C:H/I:H/A:H");
+
+    expect(vector.getExploitabilitySubScore()).toBe(0.9);
+  });
+
+  it("Should return the Exploitability sub score equal 0.1", () => {
+    const vector = CVSS("CVSS:3.0/AV:P/AC:H/PR:H/UI:R/S:U/C:N/I:N/A:N");
+
+    expect(vector.getExploitabilitySubScore()).toBe(0.1);
+  });
+});
