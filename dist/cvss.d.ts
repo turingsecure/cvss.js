@@ -18,4 +18,6 @@ declare function CVSS(vector: string): {
     getCleanVectorString: () => string;
     updateVectorValue: (metric: string, value: string) => string;
     isValid: true;
+    getImpactSubScore: () => number;
+    getExploitabilitySubScore: () => number;
 };
