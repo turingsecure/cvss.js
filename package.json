@@ -1,6 +1,6 @@
 {
   "name": "@turingpointde/cvss.js",
-  "version": "1.4.7",
+  "version": "1.5.0",
   "description": "A tiny library to work with cvss vectors",
   "scripts": {
     "build": "webpack && tsc",
@@ -8,7 +8,10 @@
     "lint": "npx eslint ./",
     "test": "jest --detectOpenHandles --forceExit"
   },
-  "keywords": ["cvss", "security"],
+  "keywords": [
+    "cvss",
+    "security"
+  ],
   "author": "Fabian Kutsche",
   "license": "MIT",
   "devDependencies": {
