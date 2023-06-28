@@ -17,15 +17,6 @@ export function getTemporalScore(vector: any): number;
  */
 export function getEnvironmentalScore(vector: any): number;
 /**
- * Returns an Exploitability sub score
- *
- * 8.22 x AttackVector x AttackComplexity x PrivilegeRequired x UserInteraction
- *
- * @param {String} vector
- * @returns {Number} Exploitability sub score
- */
-export function getExploitabilitySubScore(vector: any): number;
-/**
  * Returns an Impact sub score
  *
  * ISCBase = 1 − [(1 − ImpactConf) × (1 − ImpactInteg) × (1 − ImpactAvail)]
@@ -36,4 +27,13 @@ export function getExploitabilitySubScore(vector: any): number;
  * @param {String} vector
  * @returns {Number} Impact sub score
  */
-export function getImpactSubScore(vector: any): number;
+export function getImpactSubScore(vector: string): number;
+/**
+ * Returns an Exploitability sub score
+ *
+ * 8.22 x AttackVector x AttackComplexity x PrivilegeRequired x UserInteraction
+ *
+ * @param {String} vector
+ * @returns {Number} Exploitability sub score
+ */
+export function getExploitabilitySubScore(vector: string): number;
