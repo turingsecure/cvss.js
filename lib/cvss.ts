@@ -6,7 +6,7 @@ import { score } from "./score";
  *
  * @param {String} vector
  */
-function CVSS(vector) {
+export function CVSS(vector) {
   /**
    * Retrieves an object of vector's metrics
    * Calls a function from util.js
@@ -195,5 +195,3 @@ function CVSS(vector) {
     getExploitabilitySubScore
   };
 }
-
-module.exports = CVSS;

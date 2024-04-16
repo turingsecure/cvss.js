@@ -1,51 +1,4 @@
-type CvssVectorObject = {
-  AV: "N" | "A" | "L" | "P";
-  AC: "L" | "H";
-  PR: "N" | "L" | "H";
-  UI: "N" | "R";
-  S: "U" | "C";
-  C: "N" | "L" | "H";
-  I: "N" | "L" | "H";
-  A: "N" | "L" | "H";
-  E: "X" | "H" | "F" | "P" | "U";
-  RL: "X" | "U" | "W" | "T" | "O";
-  RC: "X" | "C" | "R" | "U";
-  CR: "X" | "H" | "M" | "L";
-  IR: "X" | "H" | "M" | "L";
-  AR: "X" | "H" | "M" | "L";
-  MAV: "X" | "N" | "A" | "L" | "P";
-  MAC: "X" | "L" | "H";
-  MPR: "X" | "N" | "L" | "H";
-  MUI: "X" | "N" | "R";
-  MS: "X" | "U" | "C";
-  MC: "X" | "N" | "L" | "H";
-  MI: "X" | "N" | "L" | "H";
-  MA: "X" | "N" | "L" | "H";
-  CVSS: string;
-};
-
-type DetailedMetric = {
-  name: string;
-  abbr: string;
-  fullName: string;
-  value: string;
-  valueAbbr: string;
-};
-
-type DetailedVectorObject = { metrics: DetailedMetric[]; CVSS: string };
-
-type metric = {
-  name: string;
-  abbr: string;
-  numerical: number;
-};
-
-type Definition = { name: string; abbr: string; metrics: metric[] };
-
-type CvssVersionDefinition = {
-  version: string;
-  definitions: Definition[];
-};
+import { CvssVectorObject, DetailedVectorObject, CvssVersionDefinition } from "./types";
 
 const definitions: CvssVersionDefinition = require("./cvss_3_0.json");
 
@@ -71,6 +24,8 @@ const findMetric = function (abbr: string) {
 const findMetricValue = function (abbr: string, vectorObject: CvssVectorObject) {
   const definition = findMetric(abbr);
   const value = definition.metrics.find((metric) => metric.abbr === vectorObject[definition.abbr]);
+
+  console.log(typeof value.numerical);
 
   return value;
 };
