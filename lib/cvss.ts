@@ -1,5 +1,5 @@
-const util = require("./util");
-const score = require("./score");
+import { util } from "./util";
+import { score } from "./score";
 
 /**
  * Creates a new CVSS object
@@ -192,7 +192,7 @@ function CVSS(vector) {
     updateVectorValue,
     isValid,
     getImpactSubScore,
-    getExploitabilitySubScore,
+    getExploitabilitySubScore
   };
 }
 

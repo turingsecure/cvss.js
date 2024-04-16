@@ -1,4 +1,4 @@
-const util = require("./util");
+import { util } from "./util";
 
 /**
  * Parses the vector to a number score
@@ -40,11 +40,7 @@ function getTemporalScore(vector) {
   const rcMetric = util.findMetricValue("RC", vectorObject);
   const reportConfidence = rcMetric ? rcMetric.numerical : 1;
 
-  return roundUp(
-    baseScore * exploitCodeMaturity * remediationLevel * reportConfidence,
-    1,
-    vector
-  );
+  return roundUp(baseScore * exploitCodeMaturity * remediationLevel * reportConfidence, 1, vector);
 }
 
 const calculateISCBase = function (vectorObject) {
@@ -62,18 +58,10 @@ const calculateISCBase = function (vectorObject) {
  */
 function getEnvironmentalScore(vector) {
   const vectorObject = util.getVectorObject(vector);
-  const scopeChanged =
-    vectorObject.MS === "X" ? vectorObject.S === "C" : vectorObject.MS === "C";
+  const scopeChanged = vectorObject.MS === "X" ? vectorObject.S === "C" : vectorObject.MS === "C";
   const modifiedISCBase = calculateISCModifiedBase(vectorObject);
-  const modifiedExploitability = calculateModifiedExploitability(
-    vectorObject,
-    scopeChanged
-  );
-  const modifiedISC = calculateModifiedISC(
-    modifiedISCBase,
-    scopeChanged,
-    vector
-  );
+  const modifiedExploitability = calculateModifiedExploitability(vectorObject, scopeChanged);
+  const modifiedISC = calculateModifiedISC(modifiedISCBase, scopeChanged, vector);
 
   if (modifiedISC <= 0) return 0;
 
@@ -95,11 +83,7 @@ function getEnvironmentalScore(vector) {
     );
   }
   return roundUp(
-    roundUp(
-      Math.min(1.08 * (modifiedISC + modifiedExploitability), 10),
-      1,
-      vector
-    ) *
+    roundUp(Math.min(1.08 * (modifiedISC + modifiedExploitability), 10), 1, vector) *
       eValue *
       rlValue *
       rcValue,
@@ -122,9 +106,7 @@ const calculateModifiedISC = function (iscBase, scopeChanged, vector) {
   if (util.getVersion(vector) === "3.0") {
     return 7.52 * (iscBase - 0.029) - 3.25 * Math.pow(iscBase - 0.02, 15);
   } else if (util.getVersion(vector) === "3.1") {
-    return (
-      7.52 * (iscBase - 0.029) - 3.25 * Math.pow(iscBase * 0.9731 - 0.02, 13)
-    );
+    return 7.52 * (iscBase - 0.029) - 3.25 * Math.pow(iscBase * 0.9731 - 0.02, 13);
   }
 };
 
@@ -147,12 +129,9 @@ function calculateISCModifiedBase(vectorObject) {
   const irValue = util.findMetricValue("IR", vectorObject).numerical;
   const arValue = util.findMetricValue("AR", vectorObject).numerical;
 
-  if (!mcValue || mcValue.abbr === "X")
-    mcValue = util.findMetricValue("C", vectorObject);
-  if (!miValue || miValue.abbr === "X")
-    miValue = util.findMetricValue("I", vectorObject);
-  if (!maValue || maValue.abbr === "X")
-    maValue = util.findMetricValue("A", vectorObject);
+  if (!mcValue || mcValue.abbr === "X") mcValue = util.findMetricValue("C", vectorObject);
+  if (!miValue || miValue.abbr === "X") miValue = util.findMetricValue("I", vectorObject);
+  if (!maValue || maValue.abbr === "X") maValue = util.findMetricValue("A", vectorObject);
 
   return Math.min(
     1 -
@@ -169,26 +148,14 @@ const calculateModifiedExploitability = function (vectorObject, scopeChanged) {
   let mprMetrics = util.findMetricValue("MPR", vectorObject);
   let muiValue = util.findMetricValue("MUI", vectorObject);
 
-  if (!mavValue || mavValue.abbr === "X")
-    mavValue = util.findMetricValue("AV", vectorObject);
-  if (!macValue || macValue.abbr === "X")
-    macValue = util.findMetricValue("AC", vectorObject);
-  if (!mprMetrics || mprMetrics.abbr === "X")
-    mprMetrics = util.findMetricValue("PR", vectorObject);
-  if (!muiValue || muiValue.abbr === "X")
-    muiValue = util.findMetricValue("UI", vectorObject);
+  if (!mavValue || mavValue.abbr === "X") mavValue = util.findMetricValue("AV", vectorObject);
+  if (!macValue || macValue.abbr === "X") macValue = util.findMetricValue("AC", vectorObject);
+  if (!mprMetrics || mprMetrics.abbr === "X") mprMetrics = util.findMetricValue("PR", vectorObject);
+  if (!muiValue || muiValue.abbr === "X") muiValue = util.findMetricValue("UI", vectorObject);
 
-  const mprValue = scopeChanged
-    ? mprMetrics.numerical.changed
-    : mprMetrics.numerical.unchanged;
+  const mprValue = scopeChanged ? mprMetrics.numerical.changed : mprMetrics.numerical.unchanged;
 
-  return (
-    8.22 *
-    mavValue.numerical *
-    macValue.numerical *
-    mprValue *
-    muiValue.numerical
-  );
+  return 8.22 * mavValue.numerical * macValue.numerical * mprValue * muiValue.numerical;
 };
 
 /**
@@ -243,10 +210,10 @@ function getExploitabilitySubScore(vector) {
   return Number(calculateExploitability(vectorObject, S === "C").toFixed(1));
 }
 
-module.exports = {
+export const score = {
   getScore,
   getTemporalScore,
   getEnvironmentalScore,
   getImpactSubScore,
-  getExploitabilitySubScore,
+  getExploitabilitySubScore
 };
