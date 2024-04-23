@@ -1,6 +1,6 @@
 import { util } from "./util";
 import { CVSS } from "../lib/cvss";
-
+// TODO: delete this file
 console.log("Test File delete before merge");
 
 const testVector = CVSS(
