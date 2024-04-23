@@ -1,6 +1,5 @@
-import { CvssVectorObject, DetailedVectorObject, CvssVersionDefinition } from "./types";
-
-const definitions: CvssVersionDefinition = require("./cvss_3_0.json");
+import { CvssVectorObject, DetailedVectorObject, MetricUnion } from "./types";
+import { definitions } from "./cvss_3_0";
 
 /**
  * Finds the vector's metric by it's abbreviation
@@ -21,13 +20,14 @@ const findMetric = function (abbr: string) {
  *
  * @returns {metric | undefined} The metric matching to the given abbriviation or undefined if no match is found
  */
-const findMetricValue = function (abbr: string, vectorObject: CvssVectorObject) {
+const findMetricValue = function <T extends MetricUnion>(
+  abbr: string,
+  vectorObject: CvssVectorObject
+) {
   const definition = findMetric(abbr);
   const value = definition.metrics.find((metric) => metric.abbr === vectorObject[definition.abbr]);
 
-  console.log(typeof value.numerical);
-
-  return value;
+  return value as T;
 };
 
 /**
@@ -88,7 +88,7 @@ function getVectorObject(vector: string) {
  */
 function getCleanVectorString(vector: string) {
   const vectorArray = vector.split("/");
-  const cleanVectorArray = [];
+  const cleanVectorArray: string[] = [];
   for (const entry of vectorArray) {
     const values = entry.split(":");
     if (values[1] !== "X") cleanVectorArray.push(entry);
@@ -100,7 +100,7 @@ function getCleanVectorString(vector: string) {
 /**
  * Retrieves an object of vector's metrics
  *
- * @param {string} vector
+ * @param {string} vector The vector string
  *
  * @returns {DetailedVectorObject} Abbreviations & Vectors Detailed Values
  */
@@ -138,9 +138,9 @@ function getDetailedVectorObject(vector: string) {
 /**
  * Calculates the rating of the given vector
  *
- * @param {number} Score calculated score from getScore() in cvss.js
+ * @param {number} Score Calculated score from getScore() in cvss.js
  *
- * @returns {string} returns one of the five possible ratings
+ * @returns {string} Returns one of the five possible ratings
  */
 function getRating(score: number) {
   let rating = "None";
@@ -162,11 +162,11 @@ function getRating(score: number) {
 /**
  * Checks whether the vector passed is valid
  *
- * @param {String} vector
+ * @param {string} vector Vector string
  *
- * @returns {Boolean} result with whether the vector is valid or not
+ * @returns {boolean} Result with whether the vector is valid or not
  */
-const isVectorValid = function (vector) {
+const isVectorValid = function (vector: string) {
   /**
    * This function is used to scan the definitions file and join all
    * abbreviations in a format that RegExp understands.
@@ -244,19 +244,21 @@ const isVectorValid = function (vector) {
  * This transforms an object in the format of getVectorObject()
  * and parses it to a CVSS comaptible string
  *
- * @param {CvssVectorObject} obj
+ * @param {string | CvssVectorObject} cvssInput Cvss vector string or object
+ *
+ * @return {string} Returns the cvss string
  */
-function parseVectorObjectToString(obj: CvssVectorObject) {
-  if (typeof obj === "string") {
-    return obj;
+function parseVectorObjectToString(cvssInput: string | CvssVectorObject) {
+  if (typeof cvssInput === "string") {
+    return cvssInput;
   }
 
-  let vectorString = `CVSS:${obj["CVSS"]}/`;
+  let vectorString = `CVSS:${cvssInput["CVSS"]}/`;
 
   for (const entry of definitions["definitions"]) {
     const metric = entry["abbr"];
-    if (Object.prototype.hasOwnProperty.call(obj, metric)) {
-      vectorString += `${metric}:${obj[metric]}/`;
+    if (Object.prototype.hasOwnProperty.call(cvssInput, metric)) {
+      vectorString += `${metric}:${cvssInput[metric]}/`;
     }
   }
 
@@ -266,13 +268,13 @@ function parseVectorObjectToString(obj: CvssVectorObject) {
 }
 
 /**
- * Retrives the version from the vector string
+ * Updates the value of a singular metric and returns the updated clean vector string
  *
- * @param {string} vector
- * @param {string} metric
- * @param {string} value
+ * @param {string} vector The vector string
+ * @param {string} metric The metric to be updated
+ * @param {string} value The new value
  *
- * @return {string}
+ * @return {string} Returns a clean vector string with the updated metric
  */
 function updateVectorValue(vector: string, metric: string, value: string) {
   const vectorObject = getVectorObject(vector);
@@ -286,7 +288,9 @@ function updateVectorValue(vector: string, metric: string, value: string) {
 /**
  * Retrives the version from the vector string
  *
- * @return {string} returns the version number
+ * @param {string} vector The vector string
+ *
+ * @return {string} Returns the version number
  */
 function getVersion(vector: string) {
   const version = vector.split("/");

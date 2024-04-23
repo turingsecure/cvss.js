@@ -34,23 +34,32 @@ type DetailedMetric = {
 
 export type DetailedVectorObject = { metrics: DetailedMetric[]; CVSS: string };
 
-type Metric = {
+export type Metric = {
   name: string;
   abbr: string;
   numerical: number;
 };
 
-type MetricTest = {
+export type MetricPrivilegesRequired = {
   name: string;
   abbr: string;
-  numerical: { changed: number; unchanged: number }; // del
+  numerical: { changed: number; unchanged: number };
 };
 
-type Definition = { name: string; abbr: string; metrics: Metric[] };
+export type MetricScope = {
+  name: string;
+  abbr: string;
+};
 
-type DefinitionTest = { name: string; abbr: "PR" | "MPR"; metrics: MetricTest[] }; // del
+export type MetricUnion = Metric | MetricScope | MetricPrivilegesRequired;
+
+export type Definition = {
+  name: string;
+  abbr: string;
+  metrics: MetricUnion[];
+};
 
 export type CvssVersionDefinition = {
   version: string;
-  definitions: DefinitionTest[] | Definition[];
+  definitions: Definition[];
 };

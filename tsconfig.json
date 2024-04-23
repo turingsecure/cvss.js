@@ -5,6 +5,8 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "outDir": "dist",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "lib": ["es6"],
+    "target": "es5"
   }
 }
