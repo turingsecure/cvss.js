@@ -1,6 +1,7 @@
 import { CvssVectorObject } from "./types";
 import { util } from "./util";
-import { score } from "./score";
+import { score as score3_0 } from "./score_3_0";
+import { score as score4_0 } from "./score_4_0";
 
 /**
  * Creates a new CVSS object
@@ -9,7 +10,7 @@ import { score } from "./score";
  */
 export function CVSS(cvss: string | CvssVectorObject) {
   const vector = util.parseVectorObjectToString(cvss);
-
+  const score = util.getVersion(vector) === "4.0" ? score4_0 : score3_0;
   /**
    * Retrieves an object of vector's metrics
    * Calls a function from util.js
@@ -44,9 +45,13 @@ export function CVSS(cvss: string | CvssVectorObject) {
    * Calculates the Temporal Rating of the given vector
    * Calls a function from util.js
    *
+   * Only available for cvss 3.0 and 3.1
+   *
    * @returns {string} returns one of the five possible ratings
    */
   function getTemporalRating() {
+    if (!(util.getVersion(vector) === "3.0" || util.getVersion(vector) === "3.1"))
+      throw "This function is not supported for this cvss version";
     return util.getRating(getTemporalScore());
   }
 
@@ -54,9 +59,13 @@ export function CVSS(cvss: string | CvssVectorObject) {
    * Calculates the Environmental Rating of the given vector
    * Calls a function from util.js
    *
+   * Only available for cvss 3.0 and 3.1
+   *
    * @returns {string} returns one of the five possible ratings
    */
   function getEnvironmentalRating() {
+    if (!(util.getVersion(vector) === "3.0" || util.getVersion(vector) === "3.1"))
+      throw "This function is not supported for this cvss version";
     return util.getRating(getEnvironmentalScore());
   }
 
@@ -90,19 +99,25 @@ export function CVSS(cvss: string | CvssVectorObject) {
 
   /**
    * Parses the vector to the temporal score
+   * Only available for cvss 3.0 and 3.1
    *
    * @returns {number} Temporal  Score
    */
   function getTemporalScore() {
+    if (!(util.getVersion(vector) === "3.0" || util.getVersion(vector) === "3.1"))
+      throw "This function is not supported for this cvss version";
     return score.getTemporalScore(vector);
   }
 
   /**
    * Parses the vector to the environmental score
+   * Only available for cvss 3.0 and 3.1
    *
    * @returns {number} Environmental  Score
    */
   function getEnvironmentalScore() {
+    if (!(util.getVersion(vector) === "3.0" || util.getVersion(vector) === "3.1"))
+      throw "This function is not supported for this cvss version";
     return score.getEnvironmentalScore(vector);
   }
 
@@ -134,10 +149,14 @@ export function CVSS(cvss: string | CvssVectorObject) {
    *
    * Scope Unchanged 6.42 × ISCBase
    * Scope Changed 7.52 × [ISCBase − 0.029] − 3.25 × [ISCBase - 0.02]15
-   *   *
+   *
+   * Only available for cvss 3.0 and 3.1
+   *
    * @returns {number} Impact sub score
    */
   function getImpactSubScore() {
+    if (!(util.getVersion(vector) === "3.0" || util.getVersion(vector) === "3.1"))
+      throw "This function is not supported for this cvss version";
     return score.getImpactSubScore(vector);
   }
 
@@ -146,9 +165,13 @@ export function CVSS(cvss: string | CvssVectorObject) {
    *
    * 8.22 x AttackVector x AttackComplexity x PrivilegeRequired x UserInteraction
    *
+   * Only available for cvss 3.0 and 3.1
+   *
    * @returns {number} Exploitability sub score
    */
   function getExploitabilitySubScore() {
+    if (!(util.getVersion(vector) === "3.0" || util.getVersion(vector) === "3.1"))
+      throw "This function is not supported for this cvss version";
     return score.getExploitabilitySubScore(vector);
   }
 

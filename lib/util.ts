@@ -1,5 +1,6 @@
 import { CvssVectorObject, DetailedVectorObject, MetricUnion } from "./types";
-import { definitions } from "./cvss_3_0";
+import { definitions as definitions3_0 } from "./cvss_3_0";
+import { definitions as definitions4_0 } from "./cvss_4_0";
 
 /**
  * Finds the vector's metric by it's abbreviation
@@ -8,7 +9,9 @@ import { definitions } from "./cvss_3_0";
  *
  * @returns {Definition} Definition of the vector metric matching the abbreviation
  */
-const findMetric = function (abbr: string) {
+const findMetric = function (abbr: string, cvssVersion: string) {
+  const definitions = cvssVersion === "4.0" ? definitions4_0 : definitions3_0;
+
   return definitions.definitions.find((def) => def.abbr === abbr);
 };
 
@@ -24,8 +27,36 @@ const findMetricValue = function <T extends MetricUnion>(
   abbr: string,
   vectorObject: CvssVectorObject
 ) {
-  const definition = findMetric(abbr);
-  const value = definition.metrics.find((metric) => metric.abbr === vectorObject[definition.abbr]);
+  const definition = findMetric(abbr, vectorObject.CVSS);
+  let value = definition.metrics.find((metric) => metric.abbr === vectorObject[definition.abbr]);
+
+  // important for cvss 4.0 scoring
+  if (vectorObject.CVSS === "4.0") {
+    // If E=X it will default to the worst case i.e. E=A
+    if (abbr == "E" && vectorObject["E"] == "X") {
+      return definition.metrics.find((metric) => metric.abbr === "A") as T;
+    }
+    // If CR=X, IR=X or AR=X they will default to the worst case i.e. CR=H, IR=H and AR=H
+    if (abbr == "CR" && vectorObject["CR"] == "X") {
+      return definition.metrics.find((metric) => metric.abbr === "H") as T;
+    }
+    // IR:X is the same as IR:H
+    if (abbr == "IR" && vectorObject["IR"] == "X") {
+      return definition.metrics.find((metric) => metric.abbr === "H") as T;
+    }
+    // AR:X is the same as AR:H
+    if (abbr == "AR" && vectorObject["AR"] == "X") {
+      return definition.metrics.find((metric) => metric.abbr === "H") as T;
+    }
+    // All other environmental metrics just overwrite base score values,
+    // so if they’re not defined just use the base score value.
+    if (vectorObject["M" + abbr] !== undefined && vectorObject["M" + abbr] !== "X") {
+      const modifiedDefinition = findMetric("M" + abbr, vectorObject.CVSS);
+      value = definition.metrics.find(
+        (metric) => metric.abbr === vectorObject[modifiedDefinition.abbr]
+      );
+    }
+  }
 
   return value as T;
 };
@@ -65,6 +96,7 @@ function roundUpExact(num: number) {
  */
 function getVectorObject(vector: string) {
   const vectorArray = vector.split("/");
+  const definitions = vector.includes("4.0") ? definitions4_0 : definitions3_0;
   const vectorObject = definitions.definitions
     .map((definition) => definition.abbr)
     .reduce((acc, curr) => {
@@ -111,7 +143,7 @@ function getDetailedVectorObject(vector: string) {
       const values = vectorItem.split(":");
       const metrics = { ...vectorObjectAccumulator.metrics };
       if (index) {
-        const vectorDef = findMetric(values[0]);
+        const vectorDef = findMetric(values[0], vectorArray[0].split(":")[1]);
         const detailedVectorObject = {
           name: vectorDef.name,
           abbr: vectorDef.abbr,
@@ -167,6 +199,7 @@ function getRating(score: number) {
  * @returns {boolean} Result with whether the vector is valid or not
  */
 const isVectorValid = function (vector: string) {
+  const definitions = vector.includes("4.0") ? definitions4_0 : definitions3_0;
   /**
    * This function is used to scan the definitions file and join all
    * abbreviations in a format that RegExp understands.
@@ -188,7 +221,9 @@ const isVectorValid = function (vector: string) {
     }
   }, "");
 
-  const totalExpressionVector = new RegExp("^CVSS:3.(0|1)(/" + expression + ")+$");
+  const totalExpressionVector = new RegExp("^CVSS:(3.(0|1)|4.0)(/" + expression + ")+$");
+
+  console.log(totalExpressionVector);
 
   //Checks if the vector is in valid format
   if (!totalExpressionVector.test(vector)) {
@@ -213,13 +248,15 @@ const isVectorValid = function (vector: string) {
     );
   });
 
+  console.log(allExpressions);
+
   for (const regex of allExpressions) {
     if ((vector.match(regex) || []).length > 1) {
       return false;
     }
   }
 
-  const mandatoryParams = [
+  const mandatoryParamsVersion3_0 = [
     /\/AV:[NALP]/g,
     /\/AC:[LH]/g,
     /\/PR:[NLH]/g,
@@ -230,8 +267,24 @@ const isVectorValid = function (vector: string) {
     /\/A:[NLH]/g
   ];
 
+  const mandatoryParamsVersion4_0 = [
+    /\/AV:[NALP]/g,
+    /\/AC:[LH]/g,
+    /\/AT:[NP]/g,
+    /\/PR:[NLH]/g,
+    /\/UI:[NPA]/g,
+    /\/VC:[NLH]/g,
+    /\/VI:[NLH]/g,
+    /\/VA:[NLH]/g,
+    /\/SC:[NLH]/g,
+    /\/SI:[NLHS]/g,
+    /\/SA:[NLHS]/g
+  ];
+
   //Checks whether all mandatory parameters are present in the vector
-  for (const regex of mandatoryParams) {
+  for (const regex of getVersion(vector) === "4.0"
+    ? mandatoryParamsVersion4_0
+    : mandatoryParamsVersion3_0) {
     if ((vector.match(regex) || []).length < 1) {
       return false;
     }
@@ -255,6 +308,7 @@ function parseVectorObjectToString(cvssInput: string | CvssVectorObject) {
 
   let vectorString = `CVSS:${cvssInput["CVSS"]}/`;
 
+  const definitions = cvssInput.CVSS === "4.0" ? definitions4_0 : definitions3_0;
   for (const entry of definitions["definitions"]) {
     const metric = entry["abbr"];
     if (Object.prototype.hasOwnProperty.call(cvssInput, metric)) {
@@ -298,6 +352,8 @@ function getVersion(vector: string) {
     return "3.0";
   } else if (version[0] === "CVSS:3.1") {
     return "3.1";
+  } else if (version[0] === "CVSS:4.0") {
+    return "4.0";
   } else {
     return "Error";
   }
