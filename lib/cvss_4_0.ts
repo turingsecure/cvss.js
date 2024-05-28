@@ -1,8 +1,9 @@
-export const definitions = {
+import { CvssVersionDefinition, CvssLookup, MaxComposed, MaxSeverity } from "./types";
+
+export const definitions: CvssVersionDefinition = {
   version: "4.0",
   definitions: [
     {
-      metricGroup: "Base",
       name: "Attack Vector",
       abbr: "AV",
       mandatory: true,
@@ -14,7 +15,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Base",
       name: "Attack Complexity",
       abbr: "AC",
       mandatory: true,
@@ -24,7 +24,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Base",
       name: "Attack Requirements",
       abbr: "AT",
       mandatory: true,
@@ -34,7 +33,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Base",
       name: "Privileges Required",
       abbr: "PR",
       mandatory: true,
@@ -45,7 +43,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Base",
       name: "User Interaction",
       abbr: "UI",
       mandatory: true,
@@ -56,7 +53,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Base",
       name: "Vulnerable System Confidentiality Impact",
       abbr: "VC",
       mandatory: true,
@@ -67,7 +63,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Base",
       name: "Vulnerable System Integrity Impact",
       abbr: "VI",
       mandatory: true,
@@ -78,7 +73,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Base",
       name: "Vulnerable System Availability Impact",
       abbr: "VA",
       mandatory: true,
@@ -89,7 +83,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Base",
       name: "Subsequent System Confidentiality Impact",
       abbr: "SC",
       mandatory: true,
@@ -100,7 +93,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Base",
       name: "Subsequent System Integrity Impact",
       abbr: "SI",
       mandatory: true,
@@ -112,7 +104,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Base",
       name: "Subsequent System Availability Impact",
       abbr: "SA",
       mandatory: true,
@@ -124,7 +115,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Threat",
       name: "Exploit Maturity",
       abbr: "E",
       mandatory: false,
@@ -136,7 +126,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Enviromental",
       name: "Confidentiality Requirement",
       abbr: "CR",
       mandatory: false,
@@ -148,7 +137,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Enviromental",
       name: "Integrity Requirement",
       abbr: "IR",
       mandatory: false,
@@ -160,7 +148,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Enviromental",
       name: "Availability Requirement",
       abbr: "AR",
       mandatory: false,
@@ -172,7 +159,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Enviromental",
       name: "Modified Attack Vector",
       abbr: "MAV",
       mandatory: false,
@@ -185,7 +171,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Enviromental",
       name: "Modified Attack Complexity",
       abbr: "MAC",
       mandatory: false,
@@ -196,7 +181,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Enviromental",
       name: "Modified Attack Requirements ",
       abbr: "MAT",
       mandatory: false,
@@ -207,7 +191,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Enviromental",
       name: "Modified Privileges Required",
       abbr: "MPR",
       mandatory: false,
@@ -219,7 +202,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Enviromental",
       name: "Modified User Interaction",
       abbr: "MUI",
       mandatory: false,
@@ -231,7 +213,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Enviromental",
       name: "Modified Vulnerable System Confidentiality",
       abbr: "MVC",
       mandatory: false,
@@ -243,7 +224,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Enviromental",
       name: "Modified Vulnerable System Integrity",
       abbr: "MVI",
       mandatory: false,
@@ -255,7 +235,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Enviromental",
       name: "Modified Vulnerable System Availability",
       abbr: "MVA",
       mandatory: false,
@@ -267,7 +246,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Enviromental",
       name: "Modified Subsequent System Confidentiality",
       abbr: "MSC",
       mandatory: false,
@@ -279,7 +257,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Enviromental",
       name: "Modified Subsequent System Integrity",
       abbr: "MSI",
       mandatory: false,
@@ -292,7 +269,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Enviromental",
       name: "Modified Subsequent System Availability",
       abbr: "MSA",
       mandatory: false,
@@ -305,7 +281,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Supplemental",
       name: "Safety",
       abbr: "S",
       mandatory: false,
@@ -316,9 +291,8 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Supplemental",
       name: "Automatable",
-      abbr: "Au",
+      abbr: "AU",
       mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X" },
@@ -327,7 +301,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Supplemental",
       name: "Recovery",
       abbr: "R",
       mandatory: false,
@@ -339,7 +312,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Supplemental",
       name: "Value Density",
       abbr: "V",
       mandatory: false,
@@ -350,7 +322,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Supplemental",
       name: "Vulnerability Response Effort",
       abbr: "RE",
       mandatory: false,
@@ -362,7 +333,6 @@ export const definitions = {
       ]
     },
     {
-      metricGroup: "Supplemental",
       name: "Provider Urgency",
       abbr: "U",
       mandatory: false,
@@ -377,7 +347,7 @@ export const definitions = {
   ]
 };
 
-export const cvssLookup_global = {
+export const cvssLookup_global: CvssLookup = {
   "000000": 10,
   "000001": 9.9,
   "000010": 9.8,
@@ -650,7 +620,7 @@ export const cvssLookup_global = {
   "212221": 0.1
 };
 
-export const maxComposed = {
+export const maxComposed: MaxComposed = {
   // EQ1
   eq1: {
     0: ["AV:N/PR:N/UI:N/"],
@@ -694,7 +664,7 @@ export const maxComposed = {
   }
 };
 
-export const maxSeverity = {
+export const maxSeverity: MaxSeverity = {
   eq1: {
     0: 1,
     1: 4,

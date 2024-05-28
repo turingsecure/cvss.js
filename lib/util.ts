@@ -21,7 +21,7 @@ const findMetric = function (abbr: string, cvssVersion: string) {
  * @param {string} abbr Abbreviation of the vector metric
  * @param {CvssVectorObject} vectorObject Vector object of interested
  *
- * @returns {metric | undefined} The metric matching to the given abbriviation or undefined if no match is found
+ * @returns {MetricUnion} The metric matching to the given abbriviation or undefined if no match is found
  */
 const findMetricValue = function <T extends MetricUnion>(
   abbr: string,
@@ -29,35 +29,6 @@ const findMetricValue = function <T extends MetricUnion>(
 ) {
   const definition = findMetric(abbr, vectorObject.CVSS);
   let value = definition.metrics.find((metric) => metric.abbr === vectorObject[definition.abbr]);
-
-  // important for cvss 4.0 scoring
-  if (vectorObject.CVSS === "4.0") {
-    // If E=X it will default to the worst case i.e. E=A
-    if (abbr == "E" && vectorObject["E"] == "X") {
-      return definition.metrics.find((metric) => metric.abbr === "A") as T;
-    }
-    // If CR=X, IR=X or AR=X they will default to the worst case i.e. CR=H, IR=H and AR=H
-    if (abbr == "CR" && vectorObject["CR"] == "X") {
-      return definition.metrics.find((metric) => metric.abbr === "H") as T;
-    }
-    // IR:X is the same as IR:H
-    if (abbr == "IR" && vectorObject["IR"] == "X") {
-      return definition.metrics.find((metric) => metric.abbr === "H") as T;
-    }
-    // AR:X is the same as AR:H
-    if (abbr == "AR" && vectorObject["AR"] == "X") {
-      return definition.metrics.find((metric) => metric.abbr === "H") as T;
-    }
-    // All other environmental metrics just overwrite base score values,
-    // so if they’re not defined just use the base score value.
-    if (vectorObject["M" + abbr] !== undefined && vectorObject["M" + abbr] !== "X") {
-      const modifiedDefinition = findMetric("M" + abbr, vectorObject.CVSS);
-      value = definition.metrics.find(
-        (metric) => metric.abbr === vectorObject[modifiedDefinition.abbr]
-      );
-    }
-  }
-
   return value as T;
 };
 
@@ -223,8 +194,6 @@ const isVectorValid = function (vector: string) {
 
   const totalExpressionVector = new RegExp("^CVSS:(3.(0|1)|4.0)(/" + expression + ")+$");
 
-  console.log(totalExpressionVector);
-
   //Checks if the vector is in valid format
   if (!totalExpressionVector.test(vector)) {
     return false;
@@ -248,43 +217,29 @@ const isVectorValid = function (vector: string) {
     );
   });
 
-  console.log(allExpressions);
-
   for (const regex of allExpressions) {
     if ((vector.match(regex) || []).length > 1) {
       return false;
     }
   }
 
-  const mandatoryParamsVersion3_0 = [
-    /\/AV:[NALP]/g,
-    /\/AC:[LH]/g,
-    /\/PR:[NLH]/g,
-    /\/UI:[NR]/g,
-    /\/S:[UC]/g,
-    /\/C:[NLH]/g,
-    /\/I:[NLH]/g,
-    /\/A:[NLH]/g
-  ];
-
-  const mandatoryParamsVersion4_0 = [
-    /\/AV:[NALP]/g,
-    /\/AC:[LH]/g,
-    /\/AT:[NP]/g,
-    /\/PR:[NLH]/g,
-    /\/UI:[NPA]/g,
-    /\/VC:[NLH]/g,
-    /\/VI:[NLH]/g,
-    /\/VA:[NLH]/g,
-    /\/SC:[NLH]/g,
-    /\/SI:[NLHS]/g,
-    /\/SA:[NLHS]/g
-  ];
+  /**
+   * Scans the definitions file and returns the array of mandatory registered abbreviation
+   * with its possible values.
+   */
+  const mandatoryExpressions = definitions.definitions
+    .filter((definition) => definition.mandatory)
+    .map((currentValue) => {
+      return new RegExp(
+        `/${currentValue.abbr}:[${currentValue.metrics.reduce((accumulator2, currentValue2) => {
+          return accumulator2 + currentValue2.abbr;
+        }, "")}]`,
+        "g"
+      );
+    });
 
   //Checks whether all mandatory parameters are present in the vector
-  for (const regex of getVersion(vector) === "4.0"
-    ? mandatoryParamsVersion4_0
-    : mandatoryParamsVersion3_0) {
+  for (const regex of mandatoryExpressions) {
     if ((vector.match(regex) || []).length < 1) {
       return false;
     }

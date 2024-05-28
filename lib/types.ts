@@ -7,20 +7,20 @@ export type CvssVectorObject = {
   C: "N" | "L" | "H";
   I: "N" | "L" | "H";
   A: "N" | "L" | "H";
-  E: "X" | "H" | "F" | "P" | "U";
-  RL: "X" | "U" | "W" | "T" | "O";
-  RC: "X" | "C" | "R" | "U";
-  CR: "X" | "H" | "M" | "L";
-  IR: "X" | "H" | "M" | "L";
-  AR: "X" | "H" | "M" | "L";
-  MAV: "X" | "N" | "A" | "L" | "P";
-  MAC: "X" | "L" | "H";
-  MPR: "X" | "N" | "L" | "H";
-  MUI: "X" | "N" | "R";
-  MS: "X" | "U" | "C";
-  MC: "X" | "N" | "L" | "H";
-  MI: "X" | "N" | "L" | "H";
-  MA: "X" | "N" | "L" | "H";
+  E?: "X" | "H" | "F" | "P" | "U";
+  RL?: "X" | "U" | "W" | "T" | "O";
+  RC?: "X" | "C" | "R" | "U";
+  CR?: "X" | "H" | "M" | "L";
+  IR?: "X" | "H" | "M" | "L";
+  AR?: "X" | "H" | "M" | "L";
+  MAV?: "X" | "N" | "A" | "L" | "P";
+  MAC?: "X" | "L" | "H";
+  MPR?: "X" | "N" | "L" | "H";
+  MUI?: "X" | "N" | "R";
+  MS?: "X" | "U" | "C";
+  MC?: "X" | "N" | "L" | "H";
+  MI?: "X" | "N" | "L" | "H";
+  MA?: "X" | "N" | "L" | "H";
   CVSS: string;
 };
 
@@ -56,6 +56,7 @@ export type MetricUnion = Metric | MetricScope | MetricPrivilegesRequired;
 export type Definition = {
   name: string;
   abbr: string;
+  mandatory: boolean;
   metrics: MetricUnion[];
 };
 
@@ -63,3 +64,10 @@ export type CvssVersionDefinition = {
   version: string;
   definitions: Definition[];
 };
+export type CvssLookup = { [key: string]: number };
+
+export type MaxComposed = {
+  [key: string]: { [key: number]: { [key: string]: string[] } | string[] };
+};
+
+export type MaxSeverity = { [key: string]: { [key: number]: { [key: number]: number } | number } };

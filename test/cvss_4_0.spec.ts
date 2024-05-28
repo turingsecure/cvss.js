@@ -1,6 +1,5 @@
 import { CVSS } from "../lib/cvss";
 
-// examples taken from: https://www.first.org/cvss/v4.0/examples
 const examples = [
   { score: 7.3, vector: "CVSS:4.0/AV:L/AC:L/AT:P/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N" },
   { score: 7.7, vector: "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:P/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N" },
@@ -43,7 +42,7 @@ const examples = [
   { score: 8.5, vector: "CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:P/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/S:P" },
   {
     score: 9.4,
-    vector: "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H/S:P/AU:Y/V:C/RE:L" // this breaks
+    vector: "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H/S:P/AU:Y/V:C/RE:L"
   },
   {
     score: 7.0,
@@ -71,47 +70,56 @@ const examples = [
 describe("Score Tests", () => {
   it("Should return the score", () => {
     // These are just some example test cases.
-
-    const vector = CVSS(
-      "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H/S:P/AU:Y/V:C/RE:L"
-    );
-    console.log(vector.getVersion());
-    expect(vector.getScore()).toBe(9.4);
-
-    // for (const ex of examples) {
-    //   try {
-    //     const vector = CVSS(ex.vector);
-    //     console.log(vector.getVersion());
-    //     expect(vector.getScore()).toBe(ex.score);
-    //   } catch {
-    //     console.log(ex.vector, ex.score);
-    //   }
-    // }
+    for (const example of examples) {
+      const vector = CVSS(example.vector);
+      expect(vector.getScore()).toBe(example.score);
+    }
   });
 });
 
-// describe("Version Tests", () => {
-//   it("Should throw error when calling getVersion", () => {
-//     const vector = CVSS("CVSS:4.0/AV:L/AC:L/AT:P/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N");
-//     expect(vector.getVersion()).toBe("4.0");
-//   });
-// });
+describe("Version Tests", () => {
+  it("Should return the correct version when calling getVersion", () => {
+    const vector = CVSS("CVSS:4.0/AV:L/AC:L/AT:P/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N");
+    expect(vector.getVersion()).toBe("4.0");
+  });
+});
 
 describe("Temporal Tests", () => {
   it("Should throw error when calling getTemporalScore", () => {
     const vector = CVSS("CVSS:4.0/AV:L/AC:L/AT:P/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N");
-    vector.getTemporalScore();
-    expect(function () {
-      parser.parse(raw);
-    }).toThrow("This function is not supported for this cvss version");
+    const fn = () => {
+      vector.getTemporalScore();
+    };
+    expect(fn).toThrow("This function is not supported for this cvss version");
   });
 });
 
-// describe("Environmental score tests", () => {
-//   it("Should throw error when calling getEnvironmentalScore", () => {
-//     const vector = CVSS("CVSS:4.0/AV:L/AC:L/AT:P/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N");
-//     expect(vector.getEnvironmentalScore()).toThrow(
-//       "This function is not supported for this cvss version"
-//     );
-//   });
-// });
+describe("Environmental score tests", () => {
+  it("Should throw error when calling getEnvironmentalScore", () => {
+    const vector = CVSS("CVSS:4.0/AV:L/AC:L/AT:P/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N");
+    const fn = () => {
+      vector.getEnvironmentalScore();
+    };
+    expect(fn).toThrow("This function is not supported for this cvss version");
+  });
+});
+
+describe("ImpactSub score tests", () => {
+  it("Should throw error when calling getImpactSubScore", () => {
+    const vector = CVSS("CVSS:4.0/AV:L/AC:L/AT:P/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N");
+    const fn = () => {
+      vector.getImpactSubScore();
+    };
+    expect(fn).toThrow("This function is not supported for this cvss version");
+  });
+});
+
+describe("ExploitabilitySub score tests", () => {
+  it("Should throw error when calling getExploitabilitySubScore", () => {
+    const vector = CVSS("CVSS:4.0/AV:L/AC:L/AT:P/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N");
+    const fn = () => {
+      vector.getExploitabilitySubScore();
+    };
+    expect(fn).toThrow("This function is not supported for this cvss version");
+  });
+});

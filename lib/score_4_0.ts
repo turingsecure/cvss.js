@@ -1,14 +1,19 @@
 import { CvssVectorObject, Metric, MetricUnion } from "./types";
 
-import { definitions, cvssLookup_global, maxComposed, maxSeverity } from "./cvss_4_0";
+import { cvssLookup_global, maxComposed, maxSeverity } from "./cvss_4_0";
 import { util } from "./util";
 
-const parseMetric = function <T extends MetricUnion>(
-  value: T,
-  abbr: string,
-  vectorObject: CvssVectorObject
-) {
+/**
+ * Finds the vector's value for a specific metric and checks for additional scoring rules.
+ *
+ * @param {string} abbr Abbreviation of the vector metric
+ * @param {CvssVectorObject} vectorObject Vector object of interested
+ *
+ * @returns {MetricUnion} Calculated Score
+ */
+const parseMetric = function <T extends MetricUnion>(abbr: string, vectorObject: CvssVectorObject) {
   const definition = util.findMetric(abbr, vectorObject.CVSS);
+  let value = util.findMetricValue<T>(abbr, vectorObject);
 
   if (vectorObject.CVSS === "4.0") {
     // If E=X it will default to the worst case i.e. E=A
@@ -27,8 +32,7 @@ const parseMetric = function <T extends MetricUnion>(
     if (abbr == "AR" && vectorObject["AR"] == "X") {
       return definition.metrics.find((metric) => metric.abbr === "H") as T;
     }
-    // All other environmental metrics just overwrite base score values,
-    // so if they’re not defined just use the base score value.
+    // All other environmental metrics just overwrite base score values if they are defined, when not defined use base score
     if (vectorObject["M" + abbr] !== undefined && vectorObject["M" + abbr] !== "X") {
       const modifiedDefinition = util.findMetric("M" + abbr, vectorObject.CVSS);
       value = definition.metrics.find(
@@ -39,10 +43,64 @@ const parseMetric = function <T extends MetricUnion>(
   return value;
 };
 
+const eq3eq6CalculateLowerMacroVector = function (eqLevels) {
+  if (eqLevels.eq3 === "1" && eqLevels.eq6 === "1") {
+    return cvssLookup_global[
+      `${eqLevels.eq1}${eqLevels.eq2}${parseInt(eqLevels.eq3) + 1}${eqLevels.eq4}${eqLevels.eq5}${
+        eqLevels.eq6
+      }`
+    ];
+  }
+  if (eqLevels.eq3 === "1" && eqLevels.eq6 === "0") {
+    return cvssLookup_global[
+      `${eqLevels.eq1}${eqLevels.eq2}${eqLevels.eq3}${eqLevels.eq4}${eqLevels.eq5}${
+        parseInt(eqLevels.eq6) + 1
+      }`
+    ];
+  }
+  if (eqLevels.eq3 === "0" && eqLevels.eq6 === "1") {
+    return cvssLookup_global[
+      `${eqLevels.eq1}${eqLevels.eq2}${parseInt(eqLevels.eq3) + 1}${eqLevels.eq4}${eqLevels.eq5}${
+        eqLevels.eq6
+      }`
+    ];
+  }
+  if (eqLevels.eq3 === "0" && eqLevels.eq6 === "0") {
+    const eq3eq6NextLowerLeftMarcoVector =
+      cvssLookup_global[
+        `${eqLevels.eq1}${eqLevels.eq2}${eqLevels.eq3}${eqLevels.eq4}${eqLevels.eq5}${
+          parseInt(eqLevels.eq6) + 1
+        }`
+      ];
+    const eq3eq6NextLowerRightMarcoVector =
+      cvssLookup_global[
+        `${eqLevels.eq1}${eqLevels.eq2}${parseInt(eqLevels.eq3) + 1}${eqLevels.eq4}${eqLevels.eq5}${
+          eqLevels.eq6
+        }`
+      ];
+    return eq3eq6NextLowerLeftMarcoVector > eq3eq6NextLowerRightMarcoVector
+      ? eq3eq6NextLowerLeftMarcoVector
+      : eq3eq6NextLowerRightMarcoVector;
+  }
+
+  return cvssLookup_global[
+    `${eqLevels.eq1}${eqLevels.eq2}${parseInt(eqLevels.eq3) + 1}${eqLevels.eq4}${eqLevels.eq5}${
+      parseInt(eqLevels.eq6) + 1
+    }`
+  ];
+};
+
+/**
+ * Parses the vector to a number score
+ *
+ * @param {string} vector The vector string
+ *
+ * @returns {number} Calculated Score
+ */
 function getScore(vector: string) {
   const vectorObj = util.getVectorObject(vector);
 
-  const metrics: { [key: string]: Metric } = {
+  const metrics = {
     AV: {} as Metric, // EQ1
     PR: {} as Metric, // EQ1
     UI: {} as Metric, // EQ1
@@ -63,15 +121,18 @@ function getScore(vector: string) {
   };
 
   for (let [key] of Object.entries(metrics)) {
-    metrics[key] = parseMetric<Metric>(
-      util.findMetricValue<Metric>(key, vectorObj),
-      key,
-      vectorObj
-    );
+    metrics[key] = parseMetric<Metric>(key, vectorObj);
   }
 
   // calculate EQ levels
-  const eqLevels = { eq1: "0", eq2: "0", eq3: "0", eq4: "0", eq5: "0", eq6: "0" };
+  const eqLevels = {
+    eq1: "0",
+    eq2: "0",
+    eq3: "0",
+    eq4: "0",
+    eq5: "0",
+    eq6: "0"
+  };
 
   // EQ1
   // 0	AV:N and PR:N and UI:N
@@ -79,13 +140,13 @@ function getScore(vector: string) {
   // 2	AV:P or not(AV:N or PR:N or UI:N)
   if (metrics.AV.abbr === "N" && metrics.PR.abbr === "N" && metrics.UI.abbr === "N")
     eqLevels.eq1 = "0";
-  else if (
+  if (
     (metrics.AV.abbr === "N" || metrics.PR.abbr === "N" || metrics.UI.abbr === "N") &&
     !(metrics.AV.abbr === "N" && metrics.PR.abbr === "N" && metrics.UI.abbr === "N") &&
     !(metrics.AV.abbr === "P")
   )
     eqLevels.eq1 = "1";
-  else if (
+  if (
     metrics.AV.abbr === "P" ||
     !(metrics.AV.abbr === "N" || metrics.PR.abbr === "N" || metrics.UI.abbr === "N")
   )
@@ -95,19 +156,19 @@ function getScore(vector: string) {
   // 0	AC:L and AT:N
   // 1	not (AC:L and AT:N)
   if (metrics.AC.abbr === "L" && metrics.AT.abbr === "N") eqLevels.eq2 = "0";
-  else if (!(metrics.AC.abbr === "L" && metrics.AT.abbr === "N")) eqLevels.eq2 = "1";
+  if (!(metrics.AC.abbr === "L" && metrics.AT.abbr === "N")) eqLevels.eq2 = "1";
 
   // EQ3
   // 0	VC:H and VI:H
   // 1	not (VC:H and VI:H) and (VC:H or VI:H or VA:H)
   // 2	not (VC:H or VI:H or VA:H)
   if (metrics.VC.abbr === "H" && metrics.VI.abbr === "H") eqLevels.eq3 = "0";
-  else if (
+  if (
     !(metrics.VC.abbr === "H" && metrics.VI.abbr === "H") &&
     (metrics.VC.abbr === "H" || metrics.VI.abbr === "H" || metrics.VA.abbr === "H")
   )
     eqLevels.eq3 = "1";
-  else if (!(metrics.VC.abbr === "H" || metrics.VI.abbr === "H" || metrics.VA.abbr === "H"))
+  if (!(metrics.VC.abbr === "H" || metrics.VI.abbr === "H" || metrics.VA.abbr === "H"))
     eqLevels.eq3 = "2";
 
   // EQ4
@@ -117,12 +178,12 @@ function getScore(vector: string) {
   // If MSI=X or MSA=X they will default to the corresponding value of SI and SA according to the rules of Modified Base Metrics in section 4.2 (See Table 15).
   // So if there are no modified base metrics, the highest value that EQ4 can reach is 1.
   if (metrics.MSI.abbr === "S" || metrics.MSA.abbr === "S") eqLevels.eq4 = "0";
-  else if (
+  if (
     !(metrics.MSI.abbr === "S" || metrics.MSA.abbr === "S") &&
     (metrics.SC.abbr === "H" || metrics.SI.abbr === "H" || metrics.SA.abbr === "H")
   )
     eqLevels.eq4 = "1";
-  else if (
+  if (
     !(metrics.MSI.abbr === "S" || metrics.MSA.abbr === "S") &&
     !(metrics.SC.abbr === "H" || metrics.SI.abbr === "H" || metrics.SA.abbr === "H")
   )
@@ -134,8 +195,8 @@ function getScore(vector: string) {
   // 2	E:U
   // If E=X it will default to the worst case (i.e., E=A).
   if (metrics.E.abbr === "A") eqLevels.eq5 = "0";
-  else if (metrics.E.abbr === "P") eqLevels.eq5 = "1";
-  else if (metrics.E.abbr === "U") eqLevels.eq5 = "2";
+  if (metrics.E.abbr === "P") eqLevels.eq5 = "1";
+  if (metrics.E.abbr === "U") eqLevels.eq5 = "2";
 
   // EQ6
   // 0	(CR:H and VC:H) or (IR:H and VI:H) or (AR:H and VA:H)
@@ -147,7 +208,7 @@ function getScore(vector: string) {
     ((metrics.AR.abbr === "H" || metrics.AR.abbr === "X") && metrics.VA.abbr === "H")
   )
     eqLevels.eq6 = "0";
-  else if (
+  if (
     !((metrics.CR.abbr === "H" || metrics.CR.abbr === "X") && metrics.VC.abbr === "H") &&
     !((metrics.IR.abbr === "H" || metrics.IR.abbr === "X") && metrics.VI.abbr === "H") &&
     !((metrics.AR.abbr === "H" || metrics.AR.abbr === "X") && metrics.VA.abbr === "H")
@@ -161,132 +222,33 @@ function getScore(vector: string) {
   // 1.1 The maximal scoring difference is determined as the difference between the current MacroVector and the lower MacroVector
   // 1.1.1 there is no lower MacroVector the available distance is set to NaN and then ignored in the further calculations
   // The scores of each MacroVector can be found in the cvssLookup table
-
   const eq1NextLowerMarcoVectorScore =
     cvssLookup_global[
-      "".concat(
-        "" + (parseInt(eqLevels.eq1) + 1),
-        eqLevels.eq2,
-        eqLevels.eq3,
-        eqLevels.eq4,
-        eqLevels.eq5,
+      `${parseInt(eqLevels.eq1) + 1}${eqLevels.eq2}${eqLevels.eq3}${eqLevels.eq4}${eqLevels.eq5}${
         eqLevels.eq6
-      )
+      }`
     ];
   const eq2NextLowerMarcoVectorScore =
     cvssLookup_global[
-      "".concat(
-        eqLevels.eq1,
-        "" + (parseInt(eqLevels.eq2) + 1),
-        eqLevels.eq3,
-        eqLevels.eq4,
-        eqLevels.eq5,
+      `${eqLevels.eq1}${parseInt(eqLevels.eq2) + 1}${eqLevels.eq3}${eqLevels.eq4}${eqLevels.eq5}${
         eqLevels.eq6
-      )
+      }`
     ];
   const eq4NextLowerMarcoVectorScore =
     cvssLookup_global[
-      "".concat(
-        eqLevels.eq1,
-        eqLevels.eq2,
-        eqLevels.eq3,
-        "" + (parseInt(eqLevels.eq4) + 1),
-        eqLevels.eq5,
+      `${eqLevels.eq1}${eqLevels.eq2}${eqLevels.eq3}${parseInt(eqLevels.eq4) + 1}${eqLevels.eq5}${
         eqLevels.eq6
-      )
+      }`
     ];
   const eq5NextLowerMarcoVectorScore =
     cvssLookup_global[
-      "".concat(
-        eqLevels.eq1,
-        eqLevels.eq2,
-        eqLevels.eq3,
-        eqLevels.eq4,
-        "" + (parseInt(eqLevels.eq5) + 1),
+      `${eqLevels.eq1}${eqLevels.eq2}${eqLevels.eq3}${eqLevels.eq4}${parseInt(eqLevels.eq5) + 1}${
         eqLevels.eq6
-      )
+      }`
     ];
 
   // EQ3 and EQ6 are joint see Table 30, an if case represents an change in level constraint f.e 11 -> 21
-  let eq3eq6NextLowerMarcoVector = 0;
-  let eq3eq6NextLowerLeftMarcoVector = 0;
-  let eq3eq6NextLowerRightMarcoVector = 0;
-  if (eqLevels.eq3 === "1" && eqLevels.eq6 === "1") {
-    eq3eq6NextLowerMarcoVector =
-      cvssLookup_global[
-        "".concat(
-          eqLevels.eq1,
-          eqLevels.eq2,
-          "" + (parseInt(eqLevels.eq3) + 1),
-          eqLevels.eq4,
-          eqLevels.eq5,
-          eqLevels.eq6
-        )
-      ];
-  } else if (eqLevels.eq3 === "1" && eqLevels.eq6 === "0") {
-    eq3eq6NextLowerMarcoVector =
-      cvssLookup_global[
-        "".concat(
-          eqLevels.eq1,
-          eqLevels.eq2,
-          eqLevels.eq3,
-          eqLevels.eq4,
-          eqLevels.eq5,
-          "" + (parseInt(eqLevels.eq6) + 1)
-        )
-      ];
-  } else if (eqLevels.eq3 === "0" && eqLevels.eq6 === "1") {
-    eq3eq6NextLowerMarcoVector =
-      cvssLookup_global[
-        "".concat(
-          eqLevels.eq1,
-          eqLevels.eq2,
-          "" + (parseInt(eqLevels.eq3) + 1),
-          eqLevels.eq4,
-          eqLevels.eq5,
-          eqLevels.eq6
-        )
-      ];
-  } else if (eqLevels.eq3 === "0" && eqLevels.eq6 === "0") {
-    eq3eq6NextLowerLeftMarcoVector =
-      cvssLookup_global[
-        "".concat(
-          eqLevels.eq1,
-          eqLevels.eq2,
-          eqLevels.eq3,
-          eqLevels.eq4,
-          eqLevels.eq5,
-          "" + (parseInt(eqLevels.eq6) + 1)
-        )
-      ];
-    eq3eq6NextLowerRightMarcoVector =
-      cvssLookup_global[
-        "".concat(
-          eqLevels.eq1,
-          eqLevels.eq2,
-          "" + (parseInt(eqLevels.eq3) + 1),
-          eqLevels.eq4,
-          eqLevels.eq5,
-          eqLevels.eq6
-        )
-      ];
-    eq3eq6NextLowerMarcoVector =
-      eq3eq6NextLowerLeftMarcoVector > eq3eq6NextLowerRightMarcoVector
-        ? eq3eq6NextLowerLeftMarcoVector
-        : eq3eq6NextLowerRightMarcoVector;
-  } // cannot exist path
-  else
-    eq3eq6NextLowerMarcoVector =
-      cvssLookup_global[
-        "".concat(
-          eqLevels.eq1,
-          eqLevels.eq2,
-          "" + (parseInt(eqLevels.eq3) + 1),
-          eqLevels.eq4,
-          eqLevels.eq5,
-          "" + (parseInt(eqLevels.eq6) + 1)
-        )
-      ];
+  let eq3eq6NextLowerMarcoVector = eq3eq6CalculateLowerMacroVector(eqLevels);
 
   // 1.2. The severity distance of the to-be scored vector from a highest severity vector in the same MacroVector is determined
   const maxima = {
@@ -298,7 +260,7 @@ function getScore(vector: string) {
   };
 
   // combine all vector maximas to create all possible maximums
-  const possibleMaximumVectorStrings = [];
+  const possibleMaximumVectorStrings: string[] = [];
   for (const eq1Max of maxima.eq1) {
     for (const eq2Max of maxima.eq2) {
       for (const eq3eq6Max of maxima.eq3eq6) {
@@ -338,9 +300,7 @@ function getScore(vector: string) {
 
     innerLoop: for (let [key] of Object.entries(severityDistance)) {
       severityDistance[key] =
-        metrics[key].numerical -
-        parseMetric<Metric>(util.findMetricValue<Metric>(key, maxVectorObj), key, maxVectorObj)
-          .numerical;
+        metrics[key].numerical - parseMetric<Metric>(key, maxVectorObj).numerical;
 
       // if any of the values is negative, a greater max vector can be found
       if (severityDistance[key] < 0) {
@@ -364,7 +324,7 @@ function getScore(vector: string) {
     break;
   }
 
-  // calculate maximal scoring difference
+  // calculate maximal scoring difference (msd)
   const currentMacroVectorValue = cvssLookup_global[macroVector];
   const msd = {
     eq1: currentMacroVectorValue - eq1NextLowerMarcoVectorScore,
@@ -442,6 +402,56 @@ function getScore(vector: string) {
   return parseFloat(vectorScore.toFixed(1));
 }
 
+/**
+ * Error function for unsupport function
+ *
+ * @param {string} vector The vector string
+ *
+ * @returns Error
+ */
+function getTemporalScore(vector: string) {
+  throw new Error("This function is not supported for this cvss version");
+  return 0;
+}
+
+/**
+ * Error function for unsupport function
+ *
+ * @param {string} vector The vector string
+ *
+ * @returns Error
+ */
+function getEnvironmentalScore(vector: string) {
+  throw new Error("This function is not supported for this cvss version");
+  return 0;
+}
+
+/**
+ * Error function for unsupport function
+ *
+ * @param {string} vector The vector string
+ *
+ * @returns Error
+ */
+function getImpactSubScore(vector: string) {
+  throw new Error("This function is not supported for this cvss version");
+}
+
+/**
+ * Error function for unsupport function
+ *
+ * @param {string} vector The vector string
+ *
+ * @returns Error
+ */
+function getExploitabilitySubScore(vector: string) {
+  throw new Error("This function is not supported for this cvss version");
+}
+
 export const score = {
-  getScore
+  getScore,
+  getTemporalScore,
+  getEnvironmentalScore,
+  getImpactSubScore,
+  getExploitabilitySubScore
 };

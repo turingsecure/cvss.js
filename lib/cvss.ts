@@ -50,8 +50,6 @@ export function CVSS(cvss: string | CvssVectorObject) {
    * @returns {string} returns one of the five possible ratings
    */
   function getTemporalRating() {
-    if (!(util.getVersion(vector) === "3.0" || util.getVersion(vector) === "3.1"))
-      throw "This function is not supported for this cvss version";
     return util.getRating(getTemporalScore());
   }
 
@@ -64,8 +62,6 @@ export function CVSS(cvss: string | CvssVectorObject) {
    * @returns {string} returns one of the five possible ratings
    */
   function getEnvironmentalRating() {
-    if (!(util.getVersion(vector) === "3.0" || util.getVersion(vector) === "3.1"))
-      throw "This function is not supported for this cvss version";
     return util.getRating(getEnvironmentalScore());
   }
 
@@ -104,8 +100,6 @@ export function CVSS(cvss: string | CvssVectorObject) {
    * @returns {number} Temporal  Score
    */
   function getTemporalScore() {
-    if (!(util.getVersion(vector) === "3.0" || util.getVersion(vector) === "3.1"))
-      throw "This function is not supported for this cvss version";
     return score.getTemporalScore(vector);
   }
 
@@ -116,8 +110,6 @@ export function CVSS(cvss: string | CvssVectorObject) {
    * @returns {number} Environmental  Score
    */
   function getEnvironmentalScore() {
-    if (!(util.getVersion(vector) === "3.0" || util.getVersion(vector) === "3.1"))
-      throw "This function is not supported for this cvss version";
     return score.getEnvironmentalScore(vector);
   }
 
@@ -155,8 +147,6 @@ export function CVSS(cvss: string | CvssVectorObject) {
    * @returns {number} Impact sub score
    */
   function getImpactSubScore() {
-    if (!(util.getVersion(vector) === "3.0" || util.getVersion(vector) === "3.1"))
-      throw "This function is not supported for this cvss version";
     return score.getImpactSubScore(vector);
   }
 
@@ -170,8 +160,6 @@ export function CVSS(cvss: string | CvssVectorObject) {
    * @returns {number} Exploitability sub score
    */
   function getExploitabilitySubScore() {
-    if (!(util.getVersion(vector) === "3.0" || util.getVersion(vector) === "3.1"))
-      throw "This function is not supported for this cvss version";
     return score.getExploitabilitySubScore(vector);
   }
 

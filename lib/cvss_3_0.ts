@@ -6,6 +6,7 @@ export const definitions: CvssVersionDefinition = {
     {
       name: "Attack Vector",
       abbr: "AV",
+      mandatory: true,
       metrics: [
         { name: "Network", abbr: "N", numerical: 0.85 },
         { name: "Adjacent", abbr: "A", numerical: 0.62 },
@@ -16,6 +17,7 @@ export const definitions: CvssVersionDefinition = {
     {
       name: "Attack Complexity",
       abbr: "AC",
+      mandatory: true,
       metrics: [
         { name: "Low", abbr: "L", numerical: 0.77 },
         { name: "High", abbr: "H", numerical: 0.44 }
@@ -24,6 +26,7 @@ export const definitions: CvssVersionDefinition = {
     {
       name: "Privileges Required",
       abbr: "PR",
+      mandatory: true,
       metrics: [
         { name: "None", abbr: "N", numerical: { changed: 0.85, unchanged: 0.85 } },
         { name: "Low", abbr: "L", numerical: { changed: 0.68, unchanged: 0.62 } },
@@ -33,6 +36,7 @@ export const definitions: CvssVersionDefinition = {
     {
       name: "User Interaction",
       abbr: "UI",
+      mandatory: true,
       metrics: [
         { name: "None", abbr: "N", numerical: 0.85 },
         { name: "Required", abbr: "R", numerical: 0.62 }
@@ -41,6 +45,7 @@ export const definitions: CvssVersionDefinition = {
     {
       name: "Scope",
       abbr: "S",
+      mandatory: true,
       metrics: [
         { name: "Unchanged", abbr: "U" },
         { name: "Changed", abbr: "C" }
@@ -49,6 +54,7 @@ export const definitions: CvssVersionDefinition = {
     {
       name: "Confidentiality",
       abbr: "C",
+      mandatory: true,
       metrics: [
         { name: "None", abbr: "N", numerical: 0 },
         { name: "Low", abbr: "L", numerical: 0.22 },
@@ -58,6 +64,7 @@ export const definitions: CvssVersionDefinition = {
     {
       name: "Integrity",
       abbr: "I",
+      mandatory: true,
       metrics: [
         { name: "None", abbr: "N", numerical: 0 },
         { name: "Low", abbr: "L", numerical: 0.22 },
@@ -67,6 +74,7 @@ export const definitions: CvssVersionDefinition = {
     {
       name: "Availability",
       abbr: "A",
+      mandatory: true,
       metrics: [
         { name: "None", abbr: "N", numerical: 0 },
         { name: "Low", abbr: "L", numerical: 0.22 },
@@ -76,6 +84,7 @@ export const definitions: CvssVersionDefinition = {
     {
       name: "Exploit Code Maturity",
       abbr: "E",
+      mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X", numerical: 1 },
         { name: "High", abbr: "H", numerical: 1 },
@@ -87,6 +96,7 @@ export const definitions: CvssVersionDefinition = {
     {
       name: "Remediation Level",
       abbr: "RL",
+      mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X", numerical: 1 },
         { name: "Unavailable", abbr: "U", numerical: 1 },
@@ -98,6 +108,7 @@ export const definitions: CvssVersionDefinition = {
     {
       name: "Report Confidence",
       abbr: "RC",
+      mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X", numerical: 1 },
         { name: "Confirmed", abbr: "C", numerical: 1 },
@@ -108,6 +119,7 @@ export const definitions: CvssVersionDefinition = {
     {
       name: "Confidentiality Req.",
       abbr: "CR",
+      mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X", numerical: 1 },
         { name: "High", abbr: "H", numerical: 1.5 },
@@ -118,6 +130,7 @@ export const definitions: CvssVersionDefinition = {
     {
       name: "Integrity Req.",
       abbr: "IR",
+      mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X", numerical: 1 },
         { name: "High", abbr: "H", numerical: 1.5 },
@@ -128,6 +141,7 @@ export const definitions: CvssVersionDefinition = {
     {
       name: "Availability Req.",
       abbr: "AR",
+      mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X", numerical: 1 },
         { name: "High", abbr: "H", numerical: 1.5 },
@@ -138,6 +152,7 @@ export const definitions: CvssVersionDefinition = {
     {
       name: "Modified Attack Vector",
       abbr: "MAV",
+      mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X", numerical: 1 },
         { name: "Network", abbr: "N", numerical: 0.85 },
@@ -149,6 +164,7 @@ export const definitions: CvssVersionDefinition = {
     {
       name: "Modified Attack Complexity",
       abbr: "MAC",
+      mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X", numerical: 1 },
         { name: "Low", abbr: "L", numerical: 0.77 },
@@ -158,6 +174,7 @@ export const definitions: CvssVersionDefinition = {
     {
       name: "Modified Privileges Required",
       abbr: "MPR",
+      mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X", numerical: { changed: 1, unchanged: 1 } },
         { name: "None", abbr: "N", numerical: { changed: 0.85, unchanged: 0.85 } },
@@ -168,6 +185,7 @@ export const definitions: CvssVersionDefinition = {
     {
       name: "Modified User Interaction",
       abbr: "MUI",
+      mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X", numerical: 1 },
         { name: "None", abbr: "N", numerical: 0.85 },
@@ -177,6 +195,7 @@ export const definitions: CvssVersionDefinition = {
     {
       name: "Modified Scope",
       abbr: "MS",
+      mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X" },
         { name: "Unchanged", abbr: "U" },
@@ -186,6 +205,7 @@ export const definitions: CvssVersionDefinition = {
     {
       name: "Modified Confidentiality",
       abbr: "MC",
+      mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X", numerical: 1 },
         { name: "None", abbr: "N", numerical: 0 },
@@ -196,6 +216,7 @@ export const definitions: CvssVersionDefinition = {
     {
       name: "Modified Integrity",
       abbr: "MI",
+      mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X", numerical: 1 },
         { name: "None", abbr: "N", numerical: 0 },
@@ -206,6 +227,7 @@ export const definitions: CvssVersionDefinition = {
     {
       name: "Modified Availability",
       abbr: "MA",
+      mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X", numerical: 1 },
         { name: "None", abbr: "N", numerical: 0 },
