@@ -1,12 +1,12 @@
 export type CvssVectorObject = {
-  AV: "N" | "A" | "L" | "P";
-  AC: "L" | "H";
-  PR: "N" | "L" | "H";
-  UI: "N" | "R";
-  S: "U" | "C";
-  C: "N" | "L" | "H";
-  I: "N" | "L" | "H";
-  A: "N" | "L" | "H";
+  AV?: "N" | "A" | "L" | "P";
+  AC?: "L" | "H";
+  PR?: "N" | "L" | "H";
+  UI?: "N" | "R";
+  S?: "U" | "C";
+  C?: "N" | "L" | "H";
+  I?: "N" | "L" | "H";
+  A?: "N" | "L" | "H";
   E?: "X" | "H" | "F" | "P" | "U";
   RL?: "X" | "U" | "W" | "T" | "O";
   RC?: "X" | "C" | "R" | "U";
@@ -21,6 +21,13 @@ export type CvssVectorObject = {
   MC?: "X" | "N" | "L" | "H";
   MI?: "X" | "N" | "L" | "H";
   MA?: "X" | "N" | "L" | "H";
+  AT?: "N" | "P";
+  VC?: "N" | "L" | "H";
+  VI?: "N" | "L" | "H";
+  VA?: "N" | "L" | "H";
+  SC?: "N" | "L" | "H";
+  SI?: "N" | "L" | "H";
+  SA?: "N" | "L" | "H";
   CVSS: string;
 };
 
@@ -66,8 +73,10 @@ export type CvssVersionDefinition = {
 };
 export type CvssLookup = { [key: string]: number };
 
-export type MaxComposed = {
-  [key: string]: { [key: number]: { [key: string]: string[] } | string[] };
-};
+export type MaxComposedObject = { [key: number]: string[] };
 
-export type MaxSeverity = { [key: string]: { [key: number]: { [key: number]: number } | number } };
+export type MaxComposedNestedObject = { [key: number]: { [key: string]: string[] } };
+
+export type MaxSeverityObject = { [key: number]: number };
+
+export type MaxSeverityNestedObject = { [key: number]: { [key: number]: number } };

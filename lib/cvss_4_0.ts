@@ -1,4 +1,11 @@
-import { CvssVersionDefinition, CvssLookup, MaxComposed, MaxSeverity } from "./types";
+import {
+  CvssVersionDefinition,
+  CvssLookup,
+  MaxComposedObject,
+  MaxComposedNestedObject,
+  MaxSeverityObject,
+  MaxSeverityNestedObject
+} from "./types";
 
 export const definitions: CvssVersionDefinition = {
   version: "4.0",
@@ -620,18 +627,18 @@ export const cvssLookup_global: CvssLookup = {
   "212221": 0.1
 };
 
-export const maxComposed: MaxComposed = {
+export const maxComposed = {
   // EQ1
   eq1: {
     0: ["AV:N/PR:N/UI:N/"],
     1: ["AV:A/PR:N/UI:N/", "AV:N/PR:L/UI:N/", "AV:N/PR:N/UI:P/"],
     2: ["AV:P/PR:N/UI:N/", "AV:A/PR:L/UI:P/"]
-  },
+  } as MaxComposedObject,
   // EQ2
   eq2: {
     0: ["AC:L/AT:N/"],
     1: ["AC:H/AT:N/", "AC:L/AT:P/"]
-  },
+  } as MaxComposedObject,
   // EQ3+EQ6
   eq3: {
     0: {
@@ -649,44 +656,44 @@ export const maxComposed: MaxComposed = {
       ]
     },
     2: { "1": ["VC:L/VI:L/VA:L/CR:H/IR:H/AR:H/"] }
-  },
+  } as MaxComposedNestedObject,
   // EQ4
   eq4: {
     0: ["SC:H/SI:S/SA:S/"],
     1: ["SC:H/SI:H/SA:H/"],
     2: ["SC:L/SI:L/SA:L/"]
-  },
+  } as MaxComposedObject,
   // EQ5
   eq5: {
     0: ["E:A/"],
     1: ["E:P/"],
     2: ["E:U/"]
-  }
+  } as MaxComposedObject
 };
 
-export const maxSeverity: MaxSeverity = {
+export const maxSeverity = {
   eq1: {
     0: 1,
     1: 4,
     2: 5
-  },
+  } as MaxSeverityObject,
   eq2: {
     0: 1,
     1: 2
-  },
+  } as MaxSeverityObject,
   eq3eq6: {
     0: { 0: 7, 1: 6 },
     1: { 0: 8, 1: 8 },
     2: { 1: 10 }
-  },
+  } as MaxSeverityNestedObject,
   eq4: {
     0: 6,
     1: 5,
     2: 4
-  },
+  } as MaxSeverityObject,
   eq5: {
     0: 1,
     1: 1,
     2: 1
-  }
+  } as MaxSeverityObject
 };

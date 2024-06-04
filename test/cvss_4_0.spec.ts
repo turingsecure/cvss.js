@@ -77,6 +77,49 @@ describe("Score Tests", () => {
   });
 });
 
+describe("Create vector from object", () => {
+  it("Should return the vector as string with a valid vector object", () => {
+    expect(
+      CVSS({
+        CVSS: "4.0",
+        AV: "L",
+        AC: "L",
+        AT: "P",
+        PR: "L",
+        UI: "N",
+        VC: "H",
+        VI: "H",
+        VA: "H",
+        SC: "N",
+        SI: "N",
+        SA: "N"
+      }).vector
+    ).toBe("CVSS:4.0/AV:L/AC:L/AT:P/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N");
+  });
+
+  it("Should throw error with an invlaid vector object", () => {
+    const fn = () => {
+      expect(
+        CVSS({
+          A: "N",
+          AC: "L",
+          AV: "N",
+          C: "L",
+          CVSS: "4.0",
+          E: "X",
+          I: "H",
+          PR: "N",
+          RC: "X",
+          RL: "X",
+          S: "U",
+          UI: "N"
+        }).vector
+      );
+    };
+    expect(fn).toThrow("The vector format is not valid!");
+  });
+});
+
 describe("Version Tests", () => {
   it("Should return the correct version when calling getVersion", () => {
     const vector = CVSS("CVSS:4.0/AV:L/AC:L/AT:P/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N");

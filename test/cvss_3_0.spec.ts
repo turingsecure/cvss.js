@@ -464,7 +464,7 @@ describe("Create vector from object", () => {
       C: "H",
       I: "N",
       A: "N"
-    };
+    } as const;
 
     expect(CVSS(vectorObject).vector).toBe("CVSS:3.0/AV:N/AC:H/PR:H/UI:R/S:U/C:H/I:N/A:N");
 
@@ -481,7 +481,7 @@ describe("Create vector from object", () => {
       RL: "X",
       S: "U",
       UI: "N"
-    };
+    } as const;
 
     expect(CVSS(vectorObject1).vector).toBe(
       "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N/E:X/RL:X/RC:X"
@@ -511,7 +511,7 @@ describe("Create vector from object", () => {
       MC: "H",
       MI: "H",
       MA: "H"
-    };
+    } as const;
 
     expect(CVSS(vectorObject).getScore()).toBe(7.1);
     expect(CVSS(vectorObject).getTemporalScore()).toBe(6.9);
