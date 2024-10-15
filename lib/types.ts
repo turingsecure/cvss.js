@@ -62,7 +62,7 @@ export type MetricUnion = Metric | MetricScope | MetricPrivilegesRequired;
 
 export type Definition = {
   name: string;
-  abbr: string;
+  abbr: keyof CvssVectorObject;
   mandatory: boolean;
   metrics: MetricUnion[];
 };
@@ -75,8 +75,12 @@ export type CvssLookup = { [key: string]: number };
 
 export type MaxComposedObject = { [key: number]: string[] };
 
-export type MaxComposedNestedObject = { [key: number]: { [key: string]: string[] } };
+export type MaxComposedNestedObject = {
+  [key: number]: { [key: string]: string[] };
+};
 
 export type MaxSeverityObject = { [key: number]: number };
 
-export type MaxSeverityNestedObject = { [key: number]: { [key: number]: number } };
+export type MaxSeverityNestedObject = {
+  [key: number]: { [key: number]: number };
+};

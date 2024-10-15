@@ -4,50 +4,32 @@ import { definitions as definitions4_0 } from "./cvss_4_0";
 
 /**
  * Finds the vector's metric by it's abbreviation
- *
- * @param {string} abbr Abbreviation of the vector metric
- *
- * @returns {Definition} Definition of the vector metric matching the abbreviation
  */
-const findMetric = function (abbr: string, cvssVersion: string) {
+function findMetric(abbr: string, cvssVersion: string) {
   const definitions = cvssVersion === "4.0" ? definitions4_0 : definitions3_0;
 
   return definitions.definitions.find((def) => def.abbr === abbr);
-};
+}
 
 /**
  * Finds the vector's value for a specific metric
- *
- * @param {string} abbr Abbreviation of the vector metric
- * @param {CvssVectorObject} vectorObject Vector object of interested
- *
- * @returns {MetricUnion} The metric matching to the given abbriviation or undefined if no match is found
  */
-const findMetricValue = function <T extends MetricUnion>(
+function findMetricValue<T extends MetricUnion>(
   abbr: string,
   vectorObject: CvssVectorObject
 ) {
   const definition = findMetric(abbr, vectorObject.CVSS);
-  let value = definition.metrics.find((metric) => metric.abbr === vectorObject[definition.abbr]);
+  let value = definition?.metrics.find(
+    (metric) => metric.abbr === vectorObject[definition.abbr]
+  );
   return value as T;
-};
+}
 
-/**
- * @param {number} num The number to round
- * @param {number} precision The number of decimal places to preserve
- *
- * @returns {number} The rounded number
- */
 function roundUpApprox(num: number, precision: number) {
   precision = Math.pow(10, precision);
   return Math.ceil(num * precision) / precision;
 }
 
-/**
- * @param {number} num The number to round
- *
- * @returns {number} The rounded number
- */
 function roundUpExact(num: number) {
   const int_input = Math.round(num * 100000);
 
@@ -60,10 +42,6 @@ function roundUpExact(num: number) {
 
 /**
  * Retrieves an object of vector's metrics
- *
- * @param {string} vector The vector string
- *
- * @returns {CvssVectorObject} Abbreviations & Vector Value pair
  */
 function getVectorObject(vector: string) {
   const vectorArray = vector.split("/");
@@ -71,12 +49,14 @@ function getVectorObject(vector: string) {
   const vectorObject = definitions.definitions
     .map((definition) => definition.abbr)
     .reduce((acc, curr) => {
+      // @ts-expect-error
       acc[curr] = "X";
       return acc;
     }, {} as CvssVectorObject);
 
   for (const entry of vectorArray) {
     const values = entry.split(":");
+    // @ts-expect-error
     vectorObject[values[0]] = values[1];
   }
   return vectorObject;
@@ -84,10 +64,6 @@ function getVectorObject(vector: string) {
 
 /**
  * Returns a vector without undefined values
- *
- * @param {string} vector Vector with undefined values
- *
- * @returns {string} Vector without undefined values
  */
 function getCleanVectorString(vector: string) {
   const vectorArray = vector.split("/");
@@ -102,10 +78,6 @@ function getCleanVectorString(vector: string) {
 
 /**
  * Retrieves an object of vector's metrics
- *
- * @param {string} vector The vector string
- *
- * @returns {DetailedVectorObject} Abbreviations & Vectors Detailed Values
  */
 function getDetailedVectorObject(vector: string) {
   const vectorArray = vector.split("/");
@@ -116,20 +88,20 @@ function getDetailedVectorObject(vector: string) {
       if (index) {
         const vectorDef = findMetric(values[0], vectorArray[0].split(":")[1]);
         const detailedVectorObject = {
-          name: vectorDef.name,
-          abbr: vectorDef.abbr,
-          fullName: `${vectorDef.name} (${vectorDef.abbr})`,
-          value: vectorDef.metrics.find((def) => def.abbr === values[1]).name,
-          valueAbbr: values[1]
+          name: vectorDef?.name,
+          abbr: vectorDef?.abbr,
+          fullName: `${vectorDef?.name} (${vectorDef?.abbr})`,
+          value: vectorDef?.metrics.find((def) => def.abbr === values[1])?.name,
+          valueAbbr: values[1],
         };
         return Object.assign(vectorObjectAccumulator, {
           metrics: Object.assign(metrics, {
-            [values[0].trim()]: detailedVectorObject
-          })
+            [values[0].trim()]: detailedVectorObject,
+          }),
         });
       } else {
         return Object.assign(vectorObjectAccumulator, {
-          [values[0].trim()]: values[1]
+          [values[0].trim()]: values[1],
         });
       }
     },
@@ -140,10 +112,6 @@ function getDetailedVectorObject(vector: string) {
 
 /**
  * Calculates the rating of the given vector
- *
- * @param {number} Score Calculated score from getScore() in cvss.js
- *
- * @returns {string} Returns one of the five possible ratings
  */
 function getRating(score: number) {
   let rating = "None";
@@ -164,12 +132,8 @@ function getRating(score: number) {
 
 /**
  * Checks whether the vector passed is valid
- *
- * @param {string} vector Vector string
- *
- * @returns {boolean} Result with whether the vector is valid or not
  */
-const isVectorValid = function (vector: string) {
+function isVectorValid(vector: string) {
   const definitions = vector.includes("4.0") ? definitions4_0 : definitions3_0;
   /**
    * This function is used to scan the definitions file and join all
@@ -178,21 +142,25 @@ const isVectorValid = function (vector: string) {
    * Exit example:
    * ((((((((((AV:[NALP]|AC:[LH])|PR:[NLH])|UI:[NR])|S:[UC])|C:[NLW])|I:[NLW])|A:[NLW])|E:[XUPFH])|RL:[XOTWU])|RC:[XURC])
    */
-  const expression = definitions.definitions.reduce((accumulator, currentValue, index) => {
-    const serializedAbbr = `${currentValue.abbr}:[${currentValue.metrics.reduce(
-      (accumulator2, currentValue2) => {
+  const expression = definitions.definitions.reduce(
+    (accumulator, currentValue, index) => {
+      const serializedAbbr = `${
+        currentValue.abbr
+      }:[${currentValue.metrics.reduce((accumulator2, currentValue2) => {
         return accumulator2 + currentValue2.abbr;
-      },
-      ""
-    )}]`;
-    if (index !== 0) {
-      return `(${accumulator}|${serializedAbbr})`;
-    } else {
-      return serializedAbbr;
-    }
-  }, "");
+      }, "")}]`;
+      if (index !== 0) {
+        return `(${accumulator}|${serializedAbbr})`;
+      } else {
+        return serializedAbbr;
+      }
+    },
+    ""
+  );
 
-  const totalExpressionVector = new RegExp("^CVSS:(3.(0|1)|4.0)(/" + expression + ")+$");
+  const totalExpressionVector = new RegExp(
+    "^CVSS:(3.(0|1)|4.0)(/" + expression + ")+$"
+  );
 
   //Checks if the vector is in valid format
   if (!totalExpressionVector.test(vector)) {
@@ -210,9 +178,12 @@ const isVectorValid = function (vector: string) {
    */
   const allExpressions = definitions.definitions.map((currentValue) => {
     return new RegExp(
-      `/${currentValue.abbr}:[${currentValue.metrics.reduce((accumulator2, currentValue2) => {
-        return accumulator2 + currentValue2.abbr;
-      }, "")}]`,
+      `/${currentValue.abbr}:[${currentValue.metrics.reduce(
+        (accumulator2, currentValue2) => {
+          return accumulator2 + currentValue2.abbr;
+        },
+        ""
+      )}]`,
       "g"
     );
   });
@@ -231,9 +202,12 @@ const isVectorValid = function (vector: string) {
     .filter((definition) => definition.mandatory)
     .map((currentValue) => {
       return new RegExp(
-        `/${currentValue.abbr}:[${currentValue.metrics.reduce((accumulator2, currentValue2) => {
-          return accumulator2 + currentValue2.abbr;
-        }, "")}]`,
+        `/${currentValue.abbr}:[${currentValue.metrics.reduce(
+          (accumulator2, currentValue2) => {
+            return accumulator2 + currentValue2.abbr;
+          },
+          ""
+        )}]`,
         "g"
       );
     });
@@ -246,15 +220,11 @@ const isVectorValid = function (vector: string) {
   }
 
   return true;
-};
+}
 
 /**
  * This transforms an object in the format of getVectorObject()
  * and parses it to a CVSS comaptible string
- *
- * @param {string | CvssVectorObject} cvssInput Cvss vector string or object
- *
- * @return {string} Returns the cvss string
  */
 function parseVectorObjectToString(cvssInput: string | CvssVectorObject) {
   if (typeof cvssInput === "string") {
@@ -263,9 +233,10 @@ function parseVectorObjectToString(cvssInput: string | CvssVectorObject) {
 
   let vectorString = `CVSS:${cvssInput["CVSS"]}/`;
 
-  const definitions = cvssInput.CVSS === "4.0" ? definitions4_0 : definitions3_0;
+  const definitions =
+    cvssInput.CVSS === "4.0" ? definitions4_0 : definitions3_0;
   for (const entry of definitions["definitions"]) {
-    const metric = entry["abbr"];
+    const metric = entry.abbr;
     if (Object.prototype.hasOwnProperty.call(cvssInput, metric)) {
       vectorString += `${metric}:${cvssInput[metric]}/`;
     }
@@ -278,15 +249,14 @@ function parseVectorObjectToString(cvssInput: string | CvssVectorObject) {
 
 /**
  * Updates the value of a singular metric and returns the updated clean vector string
- *
- * @param {string} vector The vector string
- * @param {string} metric The metric to be updated
- * @param {string} value The new value
- *
- * @return {string} Returns a clean vector string with the updated metric
  */
-function updateVectorValue(vector: string, metric: string, value: string) {
+function updateVectorValue(
+  vector: string,
+  metric: keyof CvssVectorObject,
+  value: string
+) {
   const vectorObject = getVectorObject(vector);
+  // @ts-expect-error
   vectorObject[metric] = value;
 
   const vectorString = parseVectorObjectToString(vectorObject);
@@ -296,10 +266,6 @@ function updateVectorValue(vector: string, metric: string, value: string) {
 
 /**
  * Retrives the version from the vector string
- *
- * @param {string} vector The vector string
- *
- * @return {string} Returns the version number
  */
 function getVersion(vector: string) {
   const version = vector.split("/");
@@ -326,5 +292,5 @@ export const util = {
   isVectorValid,
   parseVectorObjectToString,
   getVersion,
-  getCleanVectorString
+  getCleanVectorString,
 };

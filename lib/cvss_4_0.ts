@@ -4,7 +4,7 @@ import {
   MaxComposedObject,
   MaxComposedNestedObject,
   MaxSeverityObject,
-  MaxSeverityNestedObject
+  MaxSeverityNestedObject,
 } from "./types";
 
 export const definitions: CvssVersionDefinition = {
@@ -18,8 +18,8 @@ export const definitions: CvssVersionDefinition = {
         { name: "Network", abbr: "N", numerical: 0 },
         { name: "Adjacent", abbr: "A", numerical: 0.1 },
         { name: "Local", abbr: "L", numerical: 0.2 },
-        { name: "Physical", abbr: "P", numerical: 0.3 }
-      ]
+        { name: "Physical", abbr: "P", numerical: 0.3 },
+      ],
     },
     {
       name: "Attack Complexity",
@@ -27,8 +27,8 @@ export const definitions: CvssVersionDefinition = {
       mandatory: true,
       metrics: [
         { name: "Low", abbr: "L", numerical: 0 },
-        { name: "High", abbr: "H", numerical: 0.1 }
-      ]
+        { name: "High", abbr: "H", numerical: 0.1 },
+      ],
     },
     {
       name: "Attack Requirements",
@@ -36,8 +36,8 @@ export const definitions: CvssVersionDefinition = {
       mandatory: true,
       metrics: [
         { name: "None", abbr: "N", numerical: 0 },
-        { name: "Present", abbr: "P", numerical: 0.1 }
-      ]
+        { name: "Present", abbr: "P", numerical: 0.1 },
+      ],
     },
     {
       name: "Privileges Required",
@@ -46,8 +46,8 @@ export const definitions: CvssVersionDefinition = {
       metrics: [
         { name: "None", abbr: "N", numerical: 0 },
         { name: "Low", abbr: "L", numerical: 0.1 },
-        { name: "High", abbr: "H", numerical: 0.2 }
-      ]
+        { name: "High", abbr: "H", numerical: 0.2 },
+      ],
     },
     {
       name: "User Interaction",
@@ -56,8 +56,8 @@ export const definitions: CvssVersionDefinition = {
       metrics: [
         { name: "None", abbr: "N", numerical: 0 },
         { name: "Passive", abbr: "P", numerical: 0.1 },
-        { name: "Active", abbr: "A", numerical: 0.2 }
-      ]
+        { name: "Active", abbr: "A", numerical: 0.2 },
+      ],
     },
     {
       name: "Vulnerable System Confidentiality Impact",
@@ -66,8 +66,8 @@ export const definitions: CvssVersionDefinition = {
       metrics: [
         { name: "None", abbr: "N", numerical: 0.2 },
         { name: "Low", abbr: "L", numerical: 0.1 },
-        { name: "High", abbr: "H", numerical: 0 }
-      ]
+        { name: "High", abbr: "H", numerical: 0 },
+      ],
     },
     {
       name: "Vulnerable System Integrity Impact",
@@ -76,8 +76,8 @@ export const definitions: CvssVersionDefinition = {
       metrics: [
         { name: "None", abbr: "N", numerical: 0.2 },
         { name: "Low", abbr: "L", numerical: 0.1 },
-        { name: "High", abbr: "H", numerical: 0 }
-      ]
+        { name: "High", abbr: "H", numerical: 0 },
+      ],
     },
     {
       name: "Vulnerable System Availability Impact",
@@ -86,8 +86,8 @@ export const definitions: CvssVersionDefinition = {
       metrics: [
         { name: "None", abbr: "N", numerical: 0.2 },
         { name: "Low", abbr: "L", numerical: 0.1 },
-        { name: "High", abbr: "H", numerical: 0 }
-      ]
+        { name: "High", abbr: "H", numerical: 0 },
+      ],
     },
     {
       name: "Subsequent System Confidentiality Impact",
@@ -96,8 +96,8 @@ export const definitions: CvssVersionDefinition = {
       metrics: [
         { name: "None", abbr: "N", numerical: 0.3 },
         { name: "Low", abbr: "L", numerical: 0.2 },
-        { name: "High", abbr: "H", numerical: 0.1 }
-      ]
+        { name: "High", abbr: "H", numerical: 0.1 },
+      ],
     },
     {
       name: "Subsequent System Integrity Impact",
@@ -107,8 +107,8 @@ export const definitions: CvssVersionDefinition = {
         { name: "None", abbr: "N", numerical: 0.3 },
         { name: "Low", abbr: "L", numerical: 0.2 },
         { name: "High", abbr: "H", numerical: 0.1 },
-        { name: "", abbr: "S", numerical: 0 } // no mentioned in the definitions but is in the max_composed.js
-      ]
+        { name: "", abbr: "S", numerical: 0 }, // no mentioned in the definitions but is in the max_composed.js
+      ],
     },
     {
       name: "Subsequent System Availability Impact",
@@ -118,8 +118,8 @@ export const definitions: CvssVersionDefinition = {
         { name: "None", abbr: "N", numerical: 0.3 },
         { name: "Low", abbr: "L", numerical: 0.2 },
         { name: "High", abbr: "H", numerical: 0.1 },
-        { name: "", abbr: "S", numerical: 0 } // no mentioned in the definitions but is in the max_composed.js
-      ]
+        { name: "", abbr: "S", numerical: 0 }, // no mentioned in the definitions but is in the max_composed.js
+      ],
     },
     {
       name: "Exploit Maturity",
@@ -129,8 +129,8 @@ export const definitions: CvssVersionDefinition = {
         { name: "Not Defined", abbr: "X", numerical: 0 },
         { name: "Attacked", abbr: "A", numerical: 0 },
         { name: "POC", abbr: "P", numerical: 0.1 },
-        { name: "Unreported", abbr: "U", numerical: 0.2 }
-      ]
+        { name: "Unreported", abbr: "U", numerical: 0.2 },
+      ],
     },
     {
       name: "Confidentiality Requirement",
@@ -140,8 +140,8 @@ export const definitions: CvssVersionDefinition = {
         { name: "Not Defined", abbr: "X", numerical: 0 },
         { name: "High", abbr: "H", numerical: 0 },
         { name: "Medium", abbr: "M", numerical: 0.1 },
-        { name: "Low", abbr: "L", numerical: 0.2 }
-      ]
+        { name: "Low", abbr: "L", numerical: 0.2 },
+      ],
     },
     {
       name: "Integrity Requirement",
@@ -151,8 +151,8 @@ export const definitions: CvssVersionDefinition = {
         { name: "Not Defined", abbr: "X", numerical: 0 },
         { name: "High", abbr: "H", numerical: 0 },
         { name: "Medium", abbr: "M", numerical: 0.1 },
-        { name: "Low", abbr: "L", numerical: 0.2 }
-      ]
+        { name: "Low", abbr: "L", numerical: 0.2 },
+      ],
     },
     {
       name: "Availability Requirement",
@@ -162,8 +162,8 @@ export const definitions: CvssVersionDefinition = {
         { name: "Not Defined", abbr: "X", numerical: 0 },
         { name: "High", abbr: "H", numerical: 0 },
         { name: "Medium", abbr: "M", numerical: 0.1 },
-        { name: "Low", abbr: "L", numerical: 0.2 }
-      ]
+        { name: "Low", abbr: "L", numerical: 0.2 },
+      ],
     },
     {
       name: "Modified Attack Vector",
@@ -174,8 +174,8 @@ export const definitions: CvssVersionDefinition = {
         { name: "Network", abbr: "N" },
         { name: "Adjacent", abbr: "A" },
         { name: "Local", abbr: "L" },
-        { name: "Physical", abbr: "P" }
-      ]
+        { name: "Physical", abbr: "P" },
+      ],
     },
     {
       name: "Modified Attack Complexity",
@@ -184,18 +184,19 @@ export const definitions: CvssVersionDefinition = {
       metrics: [
         { name: "Not Defined", abbr: "X" },
         { name: "High", abbr: "H" },
-        { name: "Low", abbr: "L" }
-      ]
+        { name: "Low", abbr: "L" },
+      ],
     },
     {
       name: "Modified Attack Requirements ",
+      // @ts-expect-error
       abbr: "MAT",
       mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X" },
         { name: "None", abbr: "N" },
-        { name: "Present", abbr: "P" }
-      ]
+        { name: "Present", abbr: "P" },
+      ],
     },
     {
       name: "Modified Privileges Required",
@@ -205,8 +206,8 @@ export const definitions: CvssVersionDefinition = {
         { name: "Not Defined", abbr: "X" },
         { name: "High", abbr: "H" },
         { name: "Low", abbr: "L" },
-        { name: "None", abbr: "N" }
-      ]
+        { name: "None", abbr: "N" },
+      ],
     },
     {
       name: "Modified User Interaction",
@@ -216,55 +217,60 @@ export const definitions: CvssVersionDefinition = {
         { name: "Not Defined", abbr: "X" },
         { name: "None", abbr: "N" },
         { name: "Passive", abbr: "P" },
-        { name: "Active", abbr: "A" }
-      ]
+        { name: "Active", abbr: "A" },
+      ],
     },
     {
       name: "Modified Vulnerable System Confidentiality",
+      // @ts-expect-error
       abbr: "MVC",
       mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X" },
         { name: "High", abbr: "H" },
         { name: "Low", abbr: "L" },
-        { name: "None", abbr: "N" }
-      ]
+        { name: "None", abbr: "N" },
+      ],
     },
     {
       name: "Modified Vulnerable System Integrity",
+      // @ts-expect-error
       abbr: "MVI",
       mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X" },
         { name: "High", abbr: "H" },
         { name: "Low", abbr: "L" },
-        { name: "None", abbr: "N" }
-      ]
+        { name: "None", abbr: "N" },
+      ],
     },
     {
       name: "Modified Vulnerable System Availability",
+      // @ts-expect-error
       abbr: "MVA",
       mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X" },
         { name: "High", abbr: "H" },
         { name: "Low", abbr: "L" },
-        { name: "None", abbr: "N" }
-      ]
+        { name: "None", abbr: "N" },
+      ],
     },
     {
       name: "Modified Subsequent System Confidentiality",
+      // @ts-expect-error
       abbr: "MSC",
       mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X" },
         { name: "High", abbr: "H" },
         { name: "Low", abbr: "L" },
-        { name: "None", abbr: "N" }
-      ]
+        { name: "None", abbr: "N" },
+      ],
     },
     {
       name: "Modified Subsequent System Integrity",
+      // @ts-expect-error
       abbr: "MSI",
       mandatory: false,
       metrics: [
@@ -272,11 +278,12 @@ export const definitions: CvssVersionDefinition = {
         { name: "High", abbr: "H" },
         { name: "Low", abbr: "L" },
         { name: "Negligible", abbr: "N" },
-        { name: "Safety", abbr: "S" }
-      ]
+        { name: "Safety", abbr: "S" },
+      ],
     },
     {
       name: "Modified Subsequent System Availability",
+      // @ts-expect-error
       abbr: "MSA",
       mandatory: false,
       metrics: [
@@ -284,8 +291,8 @@ export const definitions: CvssVersionDefinition = {
         { name: "High", abbr: "H" },
         { name: "Low", abbr: "L" },
         { name: "Negligible", abbr: "N" },
-        { name: "Safety", abbr: "S" }
-      ]
+        { name: "Safety", abbr: "S" },
+      ],
     },
     {
       name: "Safety",
@@ -294,53 +301,58 @@ export const definitions: CvssVersionDefinition = {
       metrics: [
         { name: "Not Defined", abbr: "X" },
         { name: "Negligible", abbr: "N" },
-        { name: "Present", abbr: "P" }
-      ]
+        { name: "Present", abbr: "P" },
+      ],
     },
     {
       name: "Automatable",
+      // @ts-expect-error
       abbr: "AU",
       mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X" },
         { name: "No", abbr: "N" },
-        { name: "Yes", abbr: "Y" }
-      ]
+        { name: "Yes", abbr: "Y" },
+      ],
     },
     {
       name: "Recovery",
+      // @ts-expect-error
       abbr: "R",
       mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X" },
         { name: "Automatic", abbr: "A" },
         { name: "User", abbr: "U" },
-        { name: "Irrecoverable", abbr: "I" }
-      ]
+        { name: "Irrecoverable", abbr: "I" },
+      ],
     },
     {
       name: "Value Density",
+      // @ts-expect-error
       abbr: "V",
       mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X" },
         { name: "Diffuse", abbr: "D" },
-        { name: "Concentrated", abbr: "C" }
-      ]
+        { name: "Concentrated", abbr: "C" },
+      ],
     },
     {
       name: "Vulnerability Response Effort",
+      // @ts-expect-error
       abbr: "RE",
       mandatory: false,
       metrics: [
         { name: "Not Defined", abbr: "X" },
         { name: "Low", abbr: "L" },
         { name: "Moderate", abbr: "M" },
-        { name: "High", abbr: "H" }
-      ]
+        { name: "High", abbr: "H" },
+      ],
     },
     {
       name: "Provider Urgency",
+      // @ts-expect-error
       abbr: "U",
       mandatory: false,
       metrics: [
@@ -348,10 +360,10 @@ export const definitions: CvssVersionDefinition = {
         { name: "Clear", abbr: "Clear" },
         { name: "Green", abbr: "Green" },
         { name: "Amber", abbr: "Amber" },
-        { name: "Red", abbr: "Red" }
-      ]
-    }
-  ]
+        { name: "Red", abbr: "Red" },
+      ],
+    },
+  ],
 };
 
 export const cvssLookup_global: CvssLookup = {
@@ -624,7 +636,7 @@ export const cvssLookup_global: CvssLookup = {
   "212121": 0.5,
   "212201": 1,
   "212211": 0.3,
-  "212221": 0.1
+  "212221": 0.1,
 };
 
 export const maxComposed = {
@@ -632,18 +644,18 @@ export const maxComposed = {
   eq1: {
     0: ["AV:N/PR:N/UI:N/"],
     1: ["AV:A/PR:N/UI:N/", "AV:N/PR:L/UI:N/", "AV:N/PR:N/UI:P/"],
-    2: ["AV:P/PR:N/UI:N/", "AV:A/PR:L/UI:P/"]
+    2: ["AV:P/PR:N/UI:N/", "AV:A/PR:L/UI:P/"],
   } as MaxComposedObject,
   // EQ2
   eq2: {
     0: ["AC:L/AT:N/"],
-    1: ["AC:H/AT:N/", "AC:L/AT:P/"]
+    1: ["AC:H/AT:N/", "AC:L/AT:P/"],
   } as MaxComposedObject,
   // EQ3+EQ6
   eq3: {
     0: {
       "0": ["VC:H/VI:H/VA:H/CR:H/IR:H/AR:H/"],
-      "1": ["VC:H/VI:H/VA:L/CR:M/IR:M/AR:H/", "VC:H/VI:H/VA:H/CR:M/IR:M/AR:M/"]
+      "1": ["VC:H/VI:H/VA:L/CR:M/IR:M/AR:H/", "VC:H/VI:H/VA:H/CR:M/IR:M/AR:M/"],
     },
     1: {
       "0": ["VC:L/VI:H/VA:H/CR:H/IR:H/AR:H/", "VC:H/VI:L/VA:H/CR:H/IR:H/AR:H/"],
@@ -652,48 +664,48 @@ export const maxComposed = {
         "VC:L/VI:H/VA:H/CR:H/IR:M/AR:M/",
         "VC:H/VI:L/VA:H/CR:M/IR:H/AR:M/",
         "VC:H/VI:L/VA:L/CR:M/IR:H/AR:H/",
-        "VC:L/VI:L/VA:H/CR:H/IR:H/AR:M/"
-      ]
+        "VC:L/VI:L/VA:H/CR:H/IR:H/AR:M/",
+      ],
     },
-    2: { "1": ["VC:L/VI:L/VA:L/CR:H/IR:H/AR:H/"] }
+    2: { "1": ["VC:L/VI:L/VA:L/CR:H/IR:H/AR:H/"] },
   } as MaxComposedNestedObject,
   // EQ4
   eq4: {
     0: ["SC:H/SI:S/SA:S/"],
     1: ["SC:H/SI:H/SA:H/"],
-    2: ["SC:L/SI:L/SA:L/"]
+    2: ["SC:L/SI:L/SA:L/"],
   } as MaxComposedObject,
   // EQ5
   eq5: {
     0: ["E:A/"],
     1: ["E:P/"],
-    2: ["E:U/"]
-  } as MaxComposedObject
+    2: ["E:U/"],
+  } as MaxComposedObject,
 };
 
 export const maxSeverity = {
   eq1: {
     0: 1,
     1: 4,
-    2: 5
+    2: 5,
   } as MaxSeverityObject,
   eq2: {
     0: 1,
-    1: 2
+    1: 2,
   } as MaxSeverityObject,
   eq3eq6: {
     0: { 0: 7, 1: 6 },
     1: { 0: 8, 1: 8 },
-    2: { 1: 10 }
+    2: { 1: 10 },
   } as MaxSeverityNestedObject,
   eq4: {
     0: 6,
     1: 5,
-    2: 4
+    2: 4,
   } as MaxSeverityObject,
   eq5: {
     0: 1,
     1: 1,
-    2: 1
-  } as MaxSeverityObject
+    2: 1,
+  } as MaxSeverityObject,
 };
