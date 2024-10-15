@@ -1,11 +1,8 @@
-import dts from "bun-plugin-dts";
-
 const output = await Bun.build({
   entrypoints: ["index.ts"],
   outdir: "./dist",
   target: "browser",
   minify: false,
-  plugins: [dts()],
   define: {
     global: "window",
   },
@@ -22,7 +19,6 @@ const output2 = await Bun.build({
   outdir: "./dist_node",
   target: "node",
   minify: false,
-  plugins: [dts()],
   define: {
     window: "undefined",
   },

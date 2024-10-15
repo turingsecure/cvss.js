@@ -922,28 +922,28 @@ var maxSeverity = {
 };
 
 // lib/util.ts
-var findMetric = function(abbr, cvssVersion) {
+function findMetric(abbr, cvssVersion) {
   const definitions3 = cvssVersion === "4.0" ? definitions2 : definitions;
   return definitions3.definitions.find((def) => def.abbr === abbr);
-};
-var findMetricValue = function(abbr, vectorObject) {
+}
+function findMetricValue(abbr, vectorObject) {
   const definition = findMetric(abbr, vectorObject.CVSS);
   let value = definition?.metrics.find((metric) => metric.abbr === vectorObject[definition.abbr]);
   return value;
-};
-var roundUpApprox = function(num, precision) {
+}
+function roundUpApprox(num, precision) {
   precision = Math.pow(10, precision);
   return Math.ceil(num * precision) / precision;
-};
-var roundUpExact = function(num) {
+}
+function roundUpExact(num) {
   const int_input = Math.round(num * 1e5);
   if (int_input % 1e4 === 0) {
     return int_input / 1e5;
   } else {
     return (Math.floor(int_input / 1e4) + 1) / 10;
   }
-};
-var getVectorObject = function(vector) {
+}
+function getVectorObject(vector) {
   const vectorArray = vector.split("/");
   const definitions3 = vector.includes("4.0") ? definitions2 : definitions;
   const vectorObject = definitions3.definitions.map((definition) => definition.abbr).reduce((acc, curr) => {
@@ -955,8 +955,8 @@ var getVectorObject = function(vector) {
     vectorObject[values[0]] = values[1];
   }
   return vectorObject;
-};
-var getCleanVectorString = function(vector) {
+}
+function getCleanVectorString(vector) {
   const vectorArray = vector.split("/");
   const cleanVectorArray = [];
   for (const entry of vectorArray) {
@@ -965,8 +965,8 @@ var getCleanVectorString = function(vector) {
       cleanVectorArray.push(entry);
   }
   return cleanVectorArray.join("/");
-};
-var getDetailedVectorObject = function(vector) {
+}
+function getDetailedVectorObject(vector) {
   const vectorArray = vector.split("/");
   const vectorObject = vectorArray.reduce((vectorObjectAccumulator, vectorItem, index) => {
     const values = vectorItem.split(":");
@@ -992,8 +992,8 @@ var getDetailedVectorObject = function(vector) {
     }
   }, { metrics: {}, CVSS: "" });
   return vectorObject;
-};
-var getRating = function(score) {
+}
+function getRating(score) {
   let rating = "None";
   if (score === 0) {
     rating = "None";
@@ -1007,8 +1007,8 @@ var getRating = function(score) {
     rating = "Critical";
   }
   return rating;
-};
-var isVectorValid = function(vector) {
+}
+function isVectorValid(vector) {
   const definitions3 = vector.includes("4.0") ? definitions2 : definitions;
   const expression = definitions3.definitions.reduce((accumulator, currentValue, index) => {
     const serializedAbbr = `${currentValue.abbr}:[${currentValue.metrics.reduce((accumulator2, currentValue2) => {
@@ -1045,8 +1045,8 @@ var isVectorValid = function(vector) {
     }
   }
   return true;
-};
-var parseVectorObjectToString = function(cvssInput) {
+}
+function parseVectorObjectToString(cvssInput) {
   if (typeof cvssInput === "string") {
     return cvssInput;
   }
@@ -1060,14 +1060,14 @@ var parseVectorObjectToString = function(cvssInput) {
   }
   vectorString = vectorString.slice(0, -1);
   return vectorString;
-};
-var updateVectorValue = function(vector, metric, value) {
+}
+function updateVectorValue(vector, metric, value) {
   const vectorObject = getVectorObject(vector);
   vectorObject[metric] = value;
   const vectorString = parseVectorObjectToString(vectorObject);
   return getCleanVectorString(vectorString);
-};
-var getVersion = function(vector) {
+}
+function getVersion(vector) {
   const version = vector.split("/");
   if (version[0] === "CVSS:3.0") {
     return "3.0";
@@ -1078,7 +1078,7 @@ var getVersion = function(vector) {
   } else {
     return "Error";
   }
-};
+}
 var util = {
   roundUpExact,
   roundUpApprox,
@@ -1095,7 +1095,7 @@ var util = {
 };
 
 // lib/score_3_0.ts
-var getScore = function(vector) {
+function getScore(vector) {
   const vectorObject = util.getVectorObject(vector);
   const scopeChanged = vectorObject.S === "C";
   const ISCBase = calculateISCBase(vectorObject);
@@ -1107,8 +1107,8 @@ var getScore = function(vector) {
     return roundUp(Math.min(1.08 * (ISC + exploitability), 10), 1, vector);
   }
   return roundUp(Math.min(ISC + exploitability, 10), 1, vector);
-};
-var getTemporalScore = function(vector) {
+}
+function getTemporalScore(vector) {
   const vectorObject = util.getVectorObject(vector);
   const baseScore = getScore(vector);
   const eMetric = util.findMetricValue("E", vectorObject);
@@ -1118,14 +1118,14 @@ var getTemporalScore = function(vector) {
   const rcMetric = util.findMetricValue("RC", vectorObject);
   const reportConfidence = rcMetric ? rcMetric.numerical : 1;
   return roundUp(baseScore * exploitCodeMaturity * remediationLevel * reportConfidence, 1, vector);
-};
-var calculateISCBase = function(vectorObject) {
+}
+function calculateISCBase(vectorObject) {
   const cValue = util.findMetricValue("C", vectorObject).numerical;
   const iValue = util.findMetricValue("I", vectorObject).numerical;
   const aValue = util.findMetricValue("A", vectorObject).numerical;
   return 1 - (1 - cValue) * (1 - iValue) * (1 - aValue);
-};
-var getEnvironmentalScore = function(vector) {
+}
+function getEnvironmentalScore(vector) {
   const vectorObject = util.getVectorObject(vector);
   const scopeChanged = vectorObject.MS === "X" ? vectorObject.S === "C" : vectorObject.MS === "C";
   const modifiedISCBase = calculateISCModifiedBase(vectorObject);
@@ -1143,32 +1143,32 @@ var getEnvironmentalScore = function(vector) {
     return roundUp(roundUp(Math.min(modifiedISC + modifiedExploitability, 10), 1, vector) * eValue * rlValue * rcValue, 1, vector);
   }
   return roundUp(roundUp(Math.min(1.08 * (modifiedISC + modifiedExploitability), 10), 1, vector) * eValue * rlValue * rcValue, 1, vector);
-};
-var calculateISC = function(iscBase, scopeChanged, vector) {
+}
+function calculateISC(iscBase, scopeChanged, vector) {
   if (!scopeChanged)
     return 6.42 * iscBase;
   if (util.getVersion(vector) === "3.0") {
     return 7.52 * (iscBase - 0.029) - 3.25 * Math.pow(iscBase - 0.02, 15);
   }
   return 7.52 * (iscBase - 0.029) - 3.25 * Math.pow(iscBase - 0.02, 15);
-};
-var calculateModifiedISC = function(iscBase, scopeChanged, vector) {
+}
+function calculateModifiedISC(iscBase, scopeChanged, vector) {
   if (!scopeChanged)
     return 6.42 * iscBase;
   if (util.getVersion(vector) === "3.0") {
     return 7.52 * (iscBase - 0.029) - 3.25 * Math.pow(iscBase - 0.02, 15);
   }
   return 7.52 * (iscBase - 0.029) - 3.25 * Math.pow(iscBase * 0.9731 - 0.02, 13);
-};
-var calculateExploitability = function(vectorObject, scopeChanged) {
+}
+function calculateExploitability(vectorObject, scopeChanged) {
   const avValue = util.findMetricValue("AV", vectorObject).numerical;
   const acValue = util.findMetricValue("AC", vectorObject).numerical;
   const prMetrics = util.findMetricValue("PR", vectorObject).numerical;
   const uiValue = util.findMetricValue("UI", vectorObject).numerical;
   const prValue = scopeChanged ? prMetrics.changed : prMetrics.unchanged;
   return 8.22 * avValue * acValue * prValue * uiValue;
-};
-var calculateISCModifiedBase = function(vectorObject) {
+}
+function calculateISCModifiedBase(vectorObject) {
   let mcValue = util.findMetricValue("MC", vectorObject);
   let miValue = util.findMetricValue("MI", vectorObject);
   let maValue = util.findMetricValue("MA", vectorObject);
@@ -1182,8 +1182,8 @@ var calculateISCModifiedBase = function(vectorObject) {
   if (!maValue || maValue.abbr === "X")
     maValue = util.findMetricValue("A", vectorObject);
   return Math.min(1 - (1 - mcValue.numerical * crValue) * (1 - miValue.numerical * irValue) * (1 - maValue.numerical * arValue), 0.915);
-};
-var calculateModifiedExploitability = function(vectorObject, scopeChanged) {
+}
+function calculateModifiedExploitability(vectorObject, scopeChanged) {
   let mavValue = util.findMetricValue("MAV", vectorObject);
   let macValue = util.findMetricValue("MAC", vectorObject);
   let mprMetrics = util.findMetricValue("MPR", vectorObject);
@@ -1198,24 +1198,24 @@ var calculateModifiedExploitability = function(vectorObject, scopeChanged) {
     muiValue = util.findMetricValue("UI", vectorObject);
   const mprValue = scopeChanged ? mprMetrics.numerical.changed : mprMetrics.numerical.unchanged;
   return 8.22 * mavValue.numerical * macValue.numerical * mprValue * muiValue.numerical;
-};
-var roundUp = function(num, precision, vector) {
+}
+function roundUp(num, precision, vector) {
   if (util.getVersion(vector) === "3.0") {
     return util.roundUpApprox(num, precision);
   }
   return util.roundUpExact(num);
-};
-var getImpactSubScore = function(vector) {
+}
+function getImpactSubScore(vector) {
   const vectorObject = util.getVectorObject(vector);
   const { S } = vectorObject;
   const ISCBase = calculateISCBase(vectorObject);
   return Number(calculateISC(ISCBase, S === "C", vector).toFixed(1));
-};
-var getExploitabilitySubScore = function(vector) {
+}
+function getExploitabilitySubScore(vector) {
   const vectorObject = util.getVectorObject(vector);
   const { S } = vectorObject;
   return Number(calculateExploitability(vectorObject, S === "C").toFixed(1));
-};
+}
 var score = {
   getScore,
   getTemporalScore,
@@ -1225,7 +1225,7 @@ var score = {
 };
 
 // lib/score_4_0.ts
-var parseMetric = function(abbr, vectorObject) {
+function parseMetric(abbr, vectorObject) {
   const definition = util.findMetric(abbr, vectorObject.CVSS);
   let value = util.findMetricValue(abbr, vectorObject);
   if (vectorObject.CVSS === "4.0") {
@@ -1247,8 +1247,8 @@ var parseMetric = function(abbr, vectorObject) {
     }
   }
   return value;
-};
-var eq3eq6CalculateLowerMacroVector = function(eqLevels) {
+}
+function eq3eq6CalculateLowerMacroVector(eqLevels) {
   if (eqLevels.eq3 === "1" && eqLevels.eq6 === "1") {
     return cvssLookup_global[`${eqLevels.eq1}${eqLevels.eq2}${parseInt(eqLevels.eq3) + 1}${eqLevels.eq4}${eqLevels.eq5}${eqLevels.eq6}`];
   }
@@ -1264,8 +1264,8 @@ var eq3eq6CalculateLowerMacroVector = function(eqLevels) {
     return eq3eq6NextLowerLeftMarcoVector > eq3eq6NextLowerRightMarcoVector ? eq3eq6NextLowerLeftMarcoVector : eq3eq6NextLowerRightMarcoVector;
   }
   return cvssLookup_global[`${eqLevels.eq1}${eqLevels.eq2}${parseInt(eqLevels.eq3) + 1}${eqLevels.eq4}${eqLevels.eq5}${parseInt(eqLevels.eq6) + 1}`];
-};
-var getScore2 = function(vector) {
+}
+function getScore2(vector) {
   const vectorObj = util.getVectorObject(vector);
   const metrics = {
     AV: {},
@@ -1448,21 +1448,21 @@ var getScore2 = function(vector) {
     vectorScore = 10;
   }
   return parseFloat(vectorScore.toFixed(1));
-};
-var getTemporalScore2 = function(vector) {
+}
+function getTemporalScore2(vector) {
   throw new Error("This function is not supported for this cvss version");
   return 0;
-};
-var getEnvironmentalScore2 = function(vector) {
+}
+function getEnvironmentalScore2(vector) {
   throw new Error("This function is not supported for this cvss version");
   return 0;
-};
-var getImpactSubScore2 = function(vector) {
+}
+function getImpactSubScore2(vector) {
   throw new Error("This function is not supported for this cvss version");
-};
-var getExploitabilitySubScore2 = function(vector) {
+}
+function getExploitabilitySubScore2(vector) {
   throw new Error("This function is not supported for this cvss version");
-};
+}
 var score2 = {
   getScore: getScore2,
   getTemporalScore: getTemporalScore2,

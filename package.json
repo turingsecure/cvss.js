@@ -21,8 +21,4 @@
     "url": "https://github.com/turingpointde/cvss.js.git"
   },
   "bugs": "https://github.com/turingpointde/cvss.js/issues",
-  "devDependencies": {
-    "@types/bun": "^1.1.11",
-    "bun-plugin-dts": "^0.3.0"
-  }
 }
