@@ -1,9 +1,17 @@
 {
-  "include": ["lib/**/*"],
   "compilerOptions": {
+    "target": "es2020",
+    "module": "esnext",
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "noUnusedLocals": true,
+    "noImplicitAny": true,
     "allowJs": true,
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "outDir": "dist"
+    "noEmit": true,
+    "outDir": "dist",
+    "resolveJsonModule": true
   }
 }
+

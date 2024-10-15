@@ -1,17 +1,17 @@
-const util = require("./util");
-const score = require("./score");
+import { CvssVectorObject } from "./types";
+import { util } from "./util";
+import { score as score3_0 } from "./score_3_0";
+import { score as score4_0 } from "./score_4_0";
 
 /**
  * Creates a new CVSS object
- *
- * @param {String} vector
  */
-function CVSS(vector) {
+export function CVSS(cvss: string | CvssVectorObject) {
+  const vector = util.parseVectorObjectToString(cvss);
+  const score = util.getVersion(vector) === "4.0" ? score4_0 : score3_0;
   /**
    * Retrieves an object of vector's metrics
    * Calls a function from util.js
-   *
-   * @returns {Object} Abbreviations & Vector Value pair
    */
   function getVectorObject() {
     return util.getVectorObject(vector);
@@ -20,8 +20,6 @@ function CVSS(vector) {
   /**
    * Retrieves an object of vector's metrics
    * Calls a function from util.js
-   *
-   * @returns {Object} Abbreviations & Vectors Detailed Values
    */
   function getDetailedVectorObject() {
     return util.getDetailedVectorObject(vector);
@@ -30,8 +28,6 @@ function CVSS(vector) {
   /**
    * Calculates the Base Rating of the given vector
    * Calls a function from util.js
-   *
-   * @returns {String} returns one of the five possible ratings
    */
   function getRating() {
     return util.getRating(getScore());
@@ -41,7 +37,7 @@ function CVSS(vector) {
    * Calculates the Temporal Rating of the given vector
    * Calls a function from util.js
    *
-   * @returns {String} returns one of the five possible ratings
+   * Only available for cvss 3.0 and 3.1
    */
   function getTemporalRating() {
     return util.getRating(getTemporalScore());
@@ -51,7 +47,7 @@ function CVSS(vector) {
    * Calculates the Environmental Rating of the given vector
    * Calls a function from util.js
    *
-   * @returns {String} returns one of the five possible ratings
+   * Only available for cvss 3.0 and 3.1
    */
   function getEnvironmentalRating() {
     return util.getRating(getEnvironmentalScore());
@@ -60,28 +56,13 @@ function CVSS(vector) {
   /**
    * Checks if the given vector is valid
    * Calls a function from util.js
-   *
-   * @returns {boolean} valid = true ; not valid = false
    */
-  const isVectorValid = function () {
+  function isVectorValid() {
     return util.isVectorValid(vector);
-  };
-
-  /**
-   * Converts an object into a vector string
-   * Calls a function from util.js
-   *
-   * @param {*} obj
-   * @returns {String} returns the vectorstring
-   */
-  function parseVectorObjectToString(obj) {
-    return util.parseVectorObjectToString(obj);
   }
 
   /**
    * Retrives the version from the vector string
-   *
-   * @return {String} returns the version number
    */
   function getVersion() {
     return util.getVersion(vector);
@@ -89,8 +70,6 @@ function CVSS(vector) {
 
   /**
    * Parses the vector to a number score
-   *
-   * @returns {Number} Calculated  Score
    */
   function getScore() {
     return score.getScore(vector);
@@ -98,8 +77,7 @@ function CVSS(vector) {
 
   /**
    * Parses the vector to the temporal score
-   *
-   * @returns {Number} Temporal  Score
+   * Only available for cvss 3.0 and 3.1
    */
   function getTemporalScore() {
     return score.getTemporalScore(vector);
@@ -107,8 +85,7 @@ function CVSS(vector) {
 
   /**
    * Parses the vector to the environmental score
-   *
-   * @returns {Number} Environmental  Score
+   * Only available for cvss 3.0 and 3.1
    */
   function getEnvironmentalScore() {
     return score.getEnvironmentalScore(vector);
@@ -116,9 +93,6 @@ function CVSS(vector) {
 
   /**
    * Returns a vector without undefined values
-   *
-   * @param {String} vector
-   * @returns {String} Vector without undefined values
    */
   function getCleanVectorString() {
     return util.getCleanVectorString(vector);
@@ -126,17 +100,35 @@ function CVSS(vector) {
 
   /**
    * Updates a vector's metric by a specific value
-   *
-   * @param {String} vector
-   * @param {String} metric
-   * @param {String} value
-   * @returns {String} Vector with updated value
    */
-  function updateVectorValue(metric, value) {
+  function updateVectorValue(metric: keyof CvssVectorObject, value: string) {
     return util.updateVectorValue(vector, metric, value);
   }
 
-  vector = parseVectorObjectToString(vector);
+  /**
+   * Returns an Impact sub score
+   *
+   * ISCBase = 1 − [(1 − ImpactConf) × (1 − ImpactInteg) × (1 − ImpactAvail)]
+   *
+   * Scope Unchanged 6.42 × ISCBase
+   * Scope Changed 7.52 × [ISCBase − 0.029] − 3.25 × [ISCBase - 0.02]15
+   *
+   * Only available for cvss 3.0 and 3.1
+   */
+  function getImpactSubScore() {
+    return score.getImpactSubScore(vector);
+  }
+
+  /**
+   * Returns an Exploitability sub score
+   *
+   * 8.22 x AttackVector x AttackComplexity x PrivilegeRequired x UserInteraction
+   *
+   * Only available for cvss 3.0 and 3.1
+   */
+  function getExploitabilitySubScore() {
+    return score.getExploitabilitySubScore(vector);
+  }
 
   //Check if vector version is valid
   const isVersionValid = getVersion();
@@ -148,33 +140,6 @@ function CVSS(vector) {
   const isValid = isVectorValid();
   if (!isValid) {
     throw new Error("The vector format is not valid!");
-  }
-
-  /**
-   * Returns an Impact sub score
-   *
-   * ISCBase = 1 − [(1 − ImpactConf) × (1 − ImpactInteg) × (1 − ImpactAvail)]
-   *
-   * Scope Unchanged 6.42 × ISCBase
-   * Scope Changed 7.52 × [ISCBase − 0.029] − 3.25 × [ISCBase - 0.02]15
-   *
-   * @param {String} vector
-   * @returns {Number} Impact sub score
-   */
-  function getImpactSubScore() {
-    return score.getImpactSubScore(vector);
-  }
-
-  /**
-   * Returns an Exploitability sub score
-   *
-   * 8.22 x AttackVector x AttackComplexity x PrivilegeRequired x UserInteraction
-   *
-   * @param {String} vector
-   * @returns {Number} Exploitability sub score
-   */
-  function getExploitabilitySubScore() {
-    return score.getExploitabilitySubScore(vector);
   }
 
   return {
@@ -190,10 +155,9 @@ function CVSS(vector) {
     getVersion,
     getCleanVectorString,
     updateVectorValue,
-    isValid,
     getImpactSubScore,
     getExploitabilitySubScore,
+    isVersionValid,
+    isValid,
   };
 }
-
-module.exports = CVSS;
