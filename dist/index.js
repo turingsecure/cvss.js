@@ -1267,6 +1267,12 @@ function eq3eq6CalculateLowerMacroVector(eqLevels) {
 }
 function getScore2(vector) {
   const vectorObj = util.getVectorObject(vector);
+  const allMetrics = ["VC", "VI", "VA", "SC", "SI", "SA"];
+  const allMetricsAreN = allMetrics.every((metric) => vectorObj[metric] === "N");
+  if (allMetricsAreN) {
+    const score2 = 0;
+    return parseFloat(score2.toFixed(1));
+  }
   const metrics = {
     AV: {},
     PR: {},
