@@ -100,6 +100,14 @@ function eq3eq6CalculateLowerMacroVector(eqLevels: any) {
 function getScore(vector: string) {
   const vectorObj = util.getVectorObject(vector);
 
+  // Special case: if all metrics are N, return 0.0
+  const allMetrics = ['VC', 'VI', 'VA', 'SC', 'SI', 'SA'] as const;
+  const allMetricsAreN = allMetrics.every(metric => vectorObj[metric as keyof CvssVectorObject] === 'N');
+  if (allMetricsAreN) {
+    const score = 0.0;
+    return parseFloat(score.toFixed(1));
+  }
+
   const metrics = {
     AV: {} as Metric, // EQ1
     PR: {} as Metric, // EQ1
