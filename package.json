@@ -1,6 +1,6 @@
 {
   "name": "@turingpointde/cvss.js",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A tiny library to work with cvss vectors",
   "browser": "dist/index.js",
   "main": "dist_node/index.js",
