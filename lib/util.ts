@@ -2,7 +2,6 @@ import { CvssVectorObject, CvssVersionDefinition, DetailedVectorObject, MetricUn
 import { definitions as definitions3_0, metricMap as metricMap3_0, metricValueMap as metricValueMap3_0 } from "./cvss_3_0";
 import { definitions as definitions4_0, metricMap as metricMap4_0, metricValueMap as metricValueMap4_0 } from "./cvss_4_0";
 
-// Pre-built validation data (built once at module load, no regex needed)
 function buildValidationData(defs: CvssVersionDefinition) {
   const mandatoryMetrics = new Set<string>();
   for (const def of defs.definitions) {
@@ -16,7 +15,6 @@ function buildValidationData(defs: CvssVersionDefinition) {
 const validationData3x = buildValidationData(definitions3_0);
 const validationData4x = buildValidationData(definitions4_0);
 
-// Pre-built default vector objects (templates for fast cloning)
 const defaultVectorObject3x: Record<string, string> = { CVSS: "3.0" };
 const defaultVectorObject4x: Record<string, string> = { CVSS: "4.0" };
 
@@ -66,13 +64,10 @@ function roundUpExact(num: number) {
  */
 function getVectorObject(vector: string) {
   const is4x = vector.includes("4.0");
-
-  // Clone pre-built template (faster than map+reduce)
   const vectorObject = is4x
     ? { ...defaultVectorObject4x }
     : { ...defaultVectorObject3x };
 
-  // Parse and set actual values
   const vectorArray = vector.split("/");
   for (const entry of vectorArray) {
     const colonPos = entry.indexOf(":");
@@ -105,16 +100,13 @@ function getDetailedVectorObject(vector: string) {
   const vectorArray = vector.split("/");
   const result: DetailedVectorObject = { metrics: {}, CVSS: "" };
 
-  // Extract version once (not on every iteration)
   const versionPart = vectorArray[0];
   const colonPos = versionPart.indexOf(":");
   const cvssVersion = versionPart.slice(colonPos + 1);
   result.CVSS = cvssVersion;
 
-  // Select the right value map for O(1) lookups
   const valueMap = cvssVersion === "4.0" ? metricValueMap4_0 : metricValueMap3_0;
 
-  // Direct assignment instead of spread (O(n) vs O(n²))
   for (let i = 1; i < vectorArray.length; i++) {
     const item = vectorArray[i];
     const itemColonPos = item.indexOf(":");
@@ -123,7 +115,6 @@ function getDetailedVectorObject(vector: string) {
 
     const vectorDef = findMetric(metricAbbr, cvssVersion);
     if (vectorDef) {
-      // Use hash map instead of Array.find()
       const metricValue = valueMap[metricAbbr]?.[valueAbbr];
 
       result.metrics[metricAbbr] = {
@@ -161,7 +152,6 @@ function getRating(score: number) {
 
 /**
  * Checks whether the vector passed is valid
- * Uses hash map lookups instead of regex for better performance
  */
 function isVectorValid(vector: string) {
   const version = getVersion(vector);
