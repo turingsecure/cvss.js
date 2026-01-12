@@ -1,14 +1,36 @@
-import { CvssVectorObject, DetailedVectorObject, MetricUnion } from "./types";
-import { definitions as definitions3_0 } from "./cvss_3_0";
-import { definitions as definitions4_0 } from "./cvss_4_0";
+import { CvssVectorObject, CvssVersionDefinition, DetailedVectorObject, MetricUnion } from "./types";
+import { definitions as definitions3_0, metricMap as metricMap3_0, metricValueMap as metricValueMap3_0 } from "./cvss_3_0";
+import { definitions as definitions4_0, metricMap as metricMap4_0, metricValueMap as metricValueMap4_0 } from "./cvss_4_0";
+
+// Pre-compiled regex patterns for validation (built once at module load)
+function buildValidationRegex(defs: CvssVersionDefinition) {
+  const expression = defs.definitions.reduce(
+    (acc, def, index) => {
+      const serializedAbbr = `${def.abbr}:[${def.metrics.map(m => m.abbr).join("")}]`;
+      return index !== 0 ? `(${acc}|${serializedAbbr})` : serializedAbbr;
+    },
+    ""
+  );
+
+  return {
+    main: new RegExp(`^CVSS:(3\\.(0|1)|4\\.0)(/${expression})+$`),
+    duplicateChecks: defs.definitions.map(def =>
+      new RegExp(`/${def.abbr}:[${def.metrics.map(m => m.abbr).join("")}]`, "g")
+    ),
+    mandatoryChecks: defs.definitions
+      .filter(def => def.mandatory)
+      .map(def => new RegExp(`/${def.abbr}:[${def.metrics.map(m => m.abbr).join("")}]`, "g")),
+  };
+}
+
+const regexCache3x = buildValidationRegex(definitions3_0);
+const regexCache4x = buildValidationRegex(definitions4_0);
 
 /**
  * Finds the vector's metric by it's abbreviation
  */
 function findMetric(abbr: string, cvssVersion: string) {
-  const definitions = cvssVersion === "4.0" ? definitions4_0 : definitions3_0;
-
-  return definitions.definitions.find((def) => def.abbr === abbr);
+  return cvssVersion === "4.0" ? metricMap4_0[abbr] : metricMap3_0[abbr];
 }
 
 /**
@@ -18,11 +40,9 @@ function findMetricValue<T extends MetricUnion>(
   abbr: string,
   vectorObject: CvssVectorObject
 ) {
-  const definition = findMetric(abbr, vectorObject.CVSS);
-  let value = definition?.metrics.find(
-    (metric) => metric.abbr === vectorObject[definition.abbr]
-  );
-  return value as T;
+  const valueMap = vectorObject.CVSS === "4.0" ? metricValueMap4_0 : metricValueMap3_0;
+  const valueAbbr = vectorObject[abbr as keyof CvssVectorObject];
+  return valueMap[abbr]?.[valueAbbr as string] as T;
 }
 
 function roundUpApprox(num: number, precision: number) {
@@ -134,89 +154,19 @@ function getRating(score: number) {
  * Checks whether the vector passed is valid
  */
 function isVectorValid(vector: string) {
-  const definitions = vector.includes("4.0") ? definitions4_0 : definitions3_0;
-  /**
-   * This function is used to scan the definitions file and join all
-   * abbreviations in a format that RegExp understands.
-   *
-   * Exit example:
-   * ((((((((((AV:[NALP]|AC:[LH])|PR:[NLH])|UI:[NR])|S:[UC])|C:[NLW])|I:[NLW])|A:[NLW])|E:[XUPFH])|RL:[XOTWU])|RC:[XURC])
-   */
-  const expression = definitions.definitions.reduce(
-    (accumulator, currentValue, index) => {
-      const serializedAbbr = `${
-        currentValue.abbr
-      }:[${currentValue.metrics.reduce((accumulator2, currentValue2) => {
-        return accumulator2 + currentValue2.abbr;
-      }, "")}]`;
-      if (index !== 0) {
-        return `(${accumulator}|${serializedAbbr})`;
-      } else {
-        return serializedAbbr;
-      }
-    },
-    ""
-  );
+  const version = getVersion(vector);
+  if (version === "Error") return false;
 
-  const totalExpressionVector = new RegExp(
-    "^CVSS:(3.(0|1)|4.0)(/" + expression + ")+$"
-  );
+  const cache = version === "4.0" ? regexCache4x : regexCache3x;
 
-  //Checks if the vector is in valid format
-  if (!totalExpressionVector.test(vector)) {
-    return false;
+  if (!cache.main.test(vector)) return false;
+
+  for (const regex of cache.duplicateChecks) {
+    if ((vector.match(regex) || []).length > 1) return false;
   }
 
-  /**
-   * Scans the definitions file and returns an array of each registered abbreviation
-   * with its possible values.
-   *
-   * Exit example:
-   * [/\/AV:[NALP]/g, /\/AC:[LH]/g, /\/PR:[NLH]/g, /\/UI:[NR]/g, /\/S:[UC]/g,]
-   *
-   * A / at the beginning serves for the algorithm not to confuse abbreviations as AC and C.
-   */
-  const allExpressions = definitions.definitions.map((currentValue) => {
-    return new RegExp(
-      `/${currentValue.abbr}:[${currentValue.metrics.reduce(
-        (accumulator2, currentValue2) => {
-          return accumulator2 + currentValue2.abbr;
-        },
-        ""
-      )}]`,
-      "g"
-    );
-  });
-
-  for (const regex of allExpressions) {
-    if ((vector.match(regex) || []).length > 1) {
-      return false;
-    }
-  }
-
-  /**
-   * Scans the definitions file and returns the array of mandatory registered abbreviation
-   * with its possible values.
-   */
-  const mandatoryExpressions = definitions.definitions
-    .filter((definition) => definition.mandatory)
-    .map((currentValue) => {
-      return new RegExp(
-        `/${currentValue.abbr}:[${currentValue.metrics.reduce(
-          (accumulator2, currentValue2) => {
-            return accumulator2 + currentValue2.abbr;
-          },
-          ""
-        )}]`,
-        "g"
-      );
-    });
-
-  //Checks whether all mandatory parameters are present in the vector
-  for (const regex of mandatoryExpressions) {
-    if ((vector.match(regex) || []).length < 1) {
-      return false;
-    }
+  for (const regex of cache.mandatoryChecks) {
+    if ((vector.match(regex) || []).length < 1) return false;
   }
 
   return true;
@@ -268,16 +218,10 @@ function updateVectorValue(
  * Retrives the version from the vector string
  */
 function getVersion(vector: string) {
-  const version = vector.split("/");
-  if (version[0] === "CVSS:3.0") {
-    return "3.0";
-  } else if (version[0] === "CVSS:3.1") {
-    return "3.1";
-  } else if (version[0] === "CVSS:4.0") {
-    return "4.0";
-  } else {
-    return "Error";
-  }
+  if (vector.startsWith("CVSS:3.0/")) return "3.0";
+  if (vector.startsWith("CVSS:3.1/")) return "3.1";
+  if (vector.startsWith("CVSS:4.0/")) return "4.0";
+  return "Error";
 }
 
 export const util = {
