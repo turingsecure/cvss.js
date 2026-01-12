@@ -366,6 +366,18 @@ export const definitions: CvssVersionDefinition = {
   ],
 };
 
+// Pre-built lookup maps for O(1) access
+export const metricMap: Record<string, typeof definitions.definitions[0]> = {};
+export const metricValueMap: Record<string, Record<string, typeof definitions.definitions[0]["metrics"][0]>> = {};
+
+for (const def of definitions.definitions) {
+  metricMap[def.abbr] = def;
+  metricValueMap[def.abbr] = {};
+  for (const metric of def.metrics) {
+    metricValueMap[def.abbr][metric.abbr] = metric;
+  }
+}
+
 export const cvssLookup_global: CvssLookup = {
   "000000": 10,
   "000001": 9.9,
