@@ -236,6 +236,15 @@ var definitions = {
     }
   ]
 };
+var metricMap = {};
+var metricValueMap = {};
+for (const def of definitions.definitions) {
+  metricMap[def.abbr] = def;
+  metricValueMap[def.abbr] = {};
+  for (const metric of def.metrics) {
+    metricValueMap[def.abbr][metric.abbr] = metric;
+  }
+}
 
 // lib/cvss_4_0.ts
 var definitions2 = {
@@ -584,6 +593,15 @@ var definitions2 = {
     }
   ]
 };
+var metricMap2 = {};
+var metricValueMap2 = {};
+for (const def of definitions2.definitions) {
+  metricMap2[def.abbr] = def;
+  metricValueMap2[def.abbr] = {};
+  for (const metric of def.metrics) {
+    metricValueMap2[def.abbr][metric.abbr] = metric;
+  }
+}
 var cvssLookup_global = {
   "000000": 10,
   "000001": 9.9,
@@ -922,14 +940,32 @@ var maxSeverity = {
 };
 
 // lib/util.ts
+function buildValidationData(defs) {
+  const mandatoryMetrics = new Set;
+  for (const def of defs.definitions) {
+    if (def.mandatory) {
+      mandatoryMetrics.add(def.abbr);
+    }
+  }
+  return { mandatoryMetrics };
+}
+var validationData3x = buildValidationData(definitions);
+var validationData4x = buildValidationData(definitions2);
+var defaultVectorObject3x = { CVSS: "3.0" };
+var defaultVectorObject4x = { CVSS: "4.0" };
+for (const def of definitions.definitions) {
+  defaultVectorObject3x[def.abbr] = "X";
+}
+for (const def of definitions2.definitions) {
+  defaultVectorObject4x[def.abbr] = "X";
+}
 function findMetric(abbr, cvssVersion) {
-  const definitions3 = cvssVersion === "4.0" ? definitions2 : definitions;
-  return definitions3.definitions.find((def) => def.abbr === abbr);
+  return cvssVersion === "4.0" ? metricMap2[abbr] : metricMap[abbr];
 }
 function findMetricValue(abbr, vectorObject) {
-  const definition = findMetric(abbr, vectorObject.CVSS);
-  let value = definition?.metrics.find((metric) => metric.abbr === vectorObject[definition.abbr]);
-  return value;
+  const valueMap = vectorObject.CVSS === "4.0" ? metricValueMap2 : metricValueMap;
+  const valueAbbr = vectorObject[abbr];
+  return valueMap[abbr]?.[valueAbbr];
 }
 function roundUpApprox(num, precision) {
   precision = Math.pow(10, precision);
@@ -944,15 +980,14 @@ function roundUpExact(num) {
   }
 }
 function getVectorObject(vector) {
+  const is4x = vector.includes("4.0");
+  const vectorObject = is4x ? { ...defaultVectorObject4x } : { ...defaultVectorObject3x };
   const vectorArray = vector.split("/");
-  const definitions3 = vector.includes("4.0") ? definitions2 : definitions;
-  const vectorObject = definitions3.definitions.map((definition) => definition.abbr).reduce((acc, curr) => {
-    acc[curr] = "X";
-    return acc;
-  }, {});
   for (const entry of vectorArray) {
-    const values = entry.split(":");
-    vectorObject[values[0]] = values[1];
+    const colonPos = entry.indexOf(":");
+    if (colonPos > 0) {
+      vectorObject[entry.slice(0, colonPos)] = entry.slice(colonPos + 1);
+    }
   }
   return vectorObject;
 }
@@ -968,30 +1003,30 @@ function getCleanVectorString(vector) {
 }
 function getDetailedVectorObject(vector) {
   const vectorArray = vector.split("/");
-  const vectorObject = vectorArray.reduce((vectorObjectAccumulator, vectorItem, index) => {
-    const values = vectorItem.split(":");
-    const metrics = { ...vectorObjectAccumulator.metrics };
-    if (index) {
-      const vectorDef = findMetric(values[0], vectorArray[0].split(":")[1]);
-      const detailedVectorObject = {
-        name: vectorDef?.name,
-        abbr: vectorDef?.abbr,
-        fullName: `${vectorDef?.name} (${vectorDef?.abbr})`,
-        value: vectorDef?.metrics.find((def) => def.abbr === values[1])?.name,
-        valueAbbr: values[1]
+  const result = { metrics: {}, CVSS: "" };
+  const versionPart = vectorArray[0];
+  const colonPos = versionPart.indexOf(":");
+  const cvssVersion = versionPart.slice(colonPos + 1);
+  result.CVSS = cvssVersion;
+  const valueMap = cvssVersion === "4.0" ? metricValueMap2 : metricValueMap;
+  for (let i = 1;i < vectorArray.length; i++) {
+    const item = vectorArray[i];
+    const itemColonPos = item.indexOf(":");
+    const metricAbbr = item.slice(0, itemColonPos);
+    const valueAbbr = item.slice(itemColonPos + 1);
+    const vectorDef = findMetric(metricAbbr, cvssVersion);
+    if (vectorDef) {
+      const metricValue = valueMap[metricAbbr]?.[valueAbbr];
+      result.metrics[metricAbbr] = {
+        name: vectorDef.name,
+        abbr: vectorDef.abbr,
+        fullName: `${vectorDef.name} (${vectorDef.abbr})`,
+        value: metricValue?.name,
+        valueAbbr
       };
-      return Object.assign(vectorObjectAccumulator, {
-        metrics: Object.assign(metrics, {
-          [values[0].trim()]: detailedVectorObject
-        })
-      });
-    } else {
-      return Object.assign(vectorObjectAccumulator, {
-        [values[0].trim()]: values[1]
-      });
     }
-  }, { metrics: {}, CVSS: "" });
-  return vectorObject;
+  }
+  return result;
 }
 function getRating(score) {
   let rating = "None";
@@ -1009,41 +1044,38 @@ function getRating(score) {
   return rating;
 }
 function isVectorValid(vector) {
-  const definitions3 = vector.includes("4.0") ? definitions2 : definitions;
-  const expression = definitions3.definitions.reduce((accumulator, currentValue, index) => {
-    const serializedAbbr = `${currentValue.abbr}:[${currentValue.metrics.reduce((accumulator2, currentValue2) => {
-      return accumulator2 + currentValue2.abbr;
-    }, "")}]`;
-    if (index !== 0) {
-      return `(${accumulator}|${serializedAbbr})`;
-    } else {
-      return serializedAbbr;
-    }
-  }, "");
-  const totalExpressionVector = new RegExp("^CVSS:(3.(0|1)|4.0)(/" + expression + ")+$");
-  if (!totalExpressionVector.test(vector)) {
+  const version = getVersion(vector);
+  if (version === "Error")
     return false;
-  }
-  const allExpressions = definitions3.definitions.map((currentValue) => {
-    return new RegExp(`/${currentValue.abbr}:[${currentValue.metrics.reduce((accumulator2, currentValue2) => {
-      return accumulator2 + currentValue2.abbr;
-    }, "")}]`, "g");
-  });
-  for (const regex of allExpressions) {
-    if ((vector.match(regex) || []).length > 1) {
+  const is4x = version === "4.0";
+  const metricMap3 = is4x ? metricMap2 : metricMap;
+  const metricValueMap3 = is4x ? metricValueMap2 : metricValueMap;
+  const { mandatoryMetrics } = is4x ? validationData4x : validationData3x;
+  const parts = vector.split("/");
+  if (parts.length < 2)
+    return false;
+  const seenMetrics = new Set;
+  const foundMandatory = new Set;
+  for (let i = 1;i < parts.length; i++) {
+    const part = parts[i];
+    const colonPos = part.indexOf(":");
+    if (colonPos <= 0)
       return false;
+    const metricAbbr = part.slice(0, colonPos);
+    const valueAbbr = part.slice(colonPos + 1);
+    if (!metricMap3[metricAbbr])
+      return false;
+    if (!metricValueMap3[metricAbbr]?.[valueAbbr])
+      return false;
+    if (seenMetrics.has(metricAbbr))
+      return false;
+    seenMetrics.add(metricAbbr);
+    if (mandatoryMetrics.has(metricAbbr)) {
+      foundMandatory.add(metricAbbr);
     }
   }
-  const mandatoryExpressions = definitions3.definitions.filter((definition) => definition.mandatory).map((currentValue) => {
-    return new RegExp(`/${currentValue.abbr}:[${currentValue.metrics.reduce((accumulator2, currentValue2) => {
-      return accumulator2 + currentValue2.abbr;
-    }, "")}]`, "g");
-  });
-  for (const regex of mandatoryExpressions) {
-    if ((vector.match(regex) || []).length < 1) {
-      return false;
-    }
-  }
+  if (foundMandatory.size !== mandatoryMetrics.size)
+    return false;
   return true;
 }
 function parseVectorObjectToString(cvssInput) {
@@ -1068,16 +1100,13 @@ function updateVectorValue(vector, metric, value) {
   return getCleanVectorString(vectorString);
 }
 function getVersion(vector) {
-  const version = vector.split("/");
-  if (version[0] === "CVSS:3.0") {
+  if (vector.startsWith("CVSS:3.0/"))
     return "3.0";
-  } else if (version[0] === "CVSS:3.1") {
+  if (vector.startsWith("CVSS:3.1/"))
     return "3.1";
-  } else if (version[0] === "CVSS:4.0") {
+  if (vector.startsWith("CVSS:4.0/"))
     return "4.0";
-  } else {
-    return "Error";
-  }
+  return "Error";
 }
 var util = {
   roundUpExact,

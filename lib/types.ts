@@ -39,7 +39,7 @@ type DetailedMetric = {
   valueAbbr: string;
 };
 
-export type DetailedVectorObject = { metrics: DetailedMetric[]; CVSS: string };
+export type DetailedVectorObject = { metrics: Record<string, DetailedMetric>; CVSS: string };
 
 export type Metric = {
   name: string;

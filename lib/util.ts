@@ -2,29 +2,30 @@ import { CvssVectorObject, CvssVersionDefinition, DetailedVectorObject, MetricUn
 import { definitions as definitions3_0, metricMap as metricMap3_0, metricValueMap as metricValueMap3_0 } from "./cvss_3_0";
 import { definitions as definitions4_0, metricMap as metricMap4_0, metricValueMap as metricValueMap4_0 } from "./cvss_4_0";
 
-// Pre-compiled regex patterns for validation (built once at module load)
-function buildValidationRegex(defs: CvssVersionDefinition) {
-  const expression = defs.definitions.reduce(
-    (acc, def, index) => {
-      const serializedAbbr = `${def.abbr}:[${def.metrics.map(m => m.abbr).join("")}]`;
-      return index !== 0 ? `(${acc}|${serializedAbbr})` : serializedAbbr;
-    },
-    ""
-  );
-
-  return {
-    main: new RegExp(`^CVSS:(3\\.(0|1)|4\\.0)(/${expression})+$`),
-    duplicateChecks: defs.definitions.map(def =>
-      new RegExp(`/${def.abbr}:[${def.metrics.map(m => m.abbr).join("")}]`, "g")
-    ),
-    mandatoryChecks: defs.definitions
-      .filter(def => def.mandatory)
-      .map(def => new RegExp(`/${def.abbr}:[${def.metrics.map(m => m.abbr).join("")}]`, "g")),
-  };
+// Pre-built validation data (built once at module load, no regex needed)
+function buildValidationData(defs: CvssVersionDefinition) {
+  const mandatoryMetrics = new Set<string>();
+  for (const def of defs.definitions) {
+    if (def.mandatory) {
+      mandatoryMetrics.add(def.abbr);
+    }
+  }
+  return { mandatoryMetrics };
 }
 
-const regexCache3x = buildValidationRegex(definitions3_0);
-const regexCache4x = buildValidationRegex(definitions4_0);
+const validationData3x = buildValidationData(definitions3_0);
+const validationData4x = buildValidationData(definitions4_0);
+
+// Pre-built default vector objects (templates for fast cloning)
+const defaultVectorObject3x: Record<string, string> = { CVSS: "3.0" };
+const defaultVectorObject4x: Record<string, string> = { CVSS: "4.0" };
+
+for (const def of definitions3_0.definitions) {
+  defaultVectorObject3x[def.abbr] = "X";
+}
+for (const def of definitions4_0.definitions) {
+  defaultVectorObject4x[def.abbr] = "X";
+}
 
 /**
  * Finds the vector's metric by it's abbreviation
@@ -64,22 +65,23 @@ function roundUpExact(num: number) {
  * Retrieves an object of vector's metrics
  */
 function getVectorObject(vector: string) {
-  const vectorArray = vector.split("/");
-  const definitions = vector.includes("4.0") ? definitions4_0 : definitions3_0;
-  const vectorObject = definitions.definitions
-    .map((definition) => definition.abbr)
-    .reduce((acc, curr) => {
-      // @ts-expect-error
-      acc[curr] = "X";
-      return acc;
-    }, {} as CvssVectorObject);
+  const is4x = vector.includes("4.0");
 
+  // Clone pre-built template (faster than map+reduce)
+  const vectorObject = is4x
+    ? { ...defaultVectorObject4x }
+    : { ...defaultVectorObject3x };
+
+  // Parse and set actual values
+  const vectorArray = vector.split("/");
   for (const entry of vectorArray) {
-    const values = entry.split(":");
-    // @ts-expect-error
-    vectorObject[values[0]] = values[1];
+    const colonPos = entry.indexOf(":");
+    if (colonPos > 0) {
+      vectorObject[entry.slice(0, colonPos)] = entry.slice(colonPos + 1);
+    }
   }
-  return vectorObject;
+
+  return vectorObject as CvssVectorObject;
 }
 
 /**
@@ -97,37 +99,44 @@ function getCleanVectorString(vector: string) {
 }
 
 /**
- * Retrieves an object of vector's metrics
+ * Retrieves an object of vector's metrics with detailed information
  */
 function getDetailedVectorObject(vector: string) {
   const vectorArray = vector.split("/");
-  const vectorObject = vectorArray.reduce(
-    (vectorObjectAccumulator, vectorItem, index) => {
-      const values = vectorItem.split(":");
-      const metrics = { ...vectorObjectAccumulator.metrics };
-      if (index) {
-        const vectorDef = findMetric(values[0], vectorArray[0].split(":")[1]);
-        const detailedVectorObject = {
-          name: vectorDef?.name,
-          abbr: vectorDef?.abbr,
-          fullName: `${vectorDef?.name} (${vectorDef?.abbr})`,
-          value: vectorDef?.metrics.find((def) => def.abbr === values[1])?.name,
-          valueAbbr: values[1],
-        };
-        return Object.assign(vectorObjectAccumulator, {
-          metrics: Object.assign(metrics, {
-            [values[0].trim()]: detailedVectorObject,
-          }),
-        });
-      } else {
-        return Object.assign(vectorObjectAccumulator, {
-          [values[0].trim()]: values[1],
-        });
-      }
-    },
-    { metrics: {}, CVSS: "" } as DetailedVectorObject
-  );
-  return vectorObject;
+  const result: DetailedVectorObject = { metrics: {}, CVSS: "" };
+
+  // Extract version once (not on every iteration)
+  const versionPart = vectorArray[0];
+  const colonPos = versionPart.indexOf(":");
+  const cvssVersion = versionPart.slice(colonPos + 1);
+  result.CVSS = cvssVersion;
+
+  // Select the right value map for O(1) lookups
+  const valueMap = cvssVersion === "4.0" ? metricValueMap4_0 : metricValueMap3_0;
+
+  // Direct assignment instead of spread (O(n) vs O(n²))
+  for (let i = 1; i < vectorArray.length; i++) {
+    const item = vectorArray[i];
+    const itemColonPos = item.indexOf(":");
+    const metricAbbr = item.slice(0, itemColonPos);
+    const valueAbbr = item.slice(itemColonPos + 1);
+
+    const vectorDef = findMetric(metricAbbr, cvssVersion);
+    if (vectorDef) {
+      // Use hash map instead of Array.find()
+      const metricValue = valueMap[metricAbbr]?.[valueAbbr];
+
+      result.metrics[metricAbbr] = {
+        name: vectorDef.name,
+        abbr: vectorDef.abbr,
+        fullName: `${vectorDef.name} (${vectorDef.abbr})`,
+        value: metricValue?.name,
+        valueAbbr: valueAbbr,
+      };
+    }
+  }
+
+  return result;
 }
 
 /**
@@ -152,22 +161,52 @@ function getRating(score: number) {
 
 /**
  * Checks whether the vector passed is valid
+ * Uses hash map lookups instead of regex for better performance
  */
 function isVectorValid(vector: string) {
   const version = getVersion(vector);
   if (version === "Error") return false;
 
-  const cache = version === "4.0" ? regexCache4x : regexCache3x;
+  const is4x = version === "4.0";
+  const metricMap = is4x ? metricMap4_0 : metricMap3_0;
+  const metricValueMap = is4x ? metricValueMap4_0 : metricValueMap3_0;
+  const { mandatoryMetrics } = is4x ? validationData4x : validationData3x;
 
-  if (!cache.main.test(vector)) return false;
+  const parts = vector.split("/");
 
-  for (const regex of cache.duplicateChecks) {
-    if ((vector.match(regex) || []).length > 1) return false;
+  // First part must be the version (already validated by getVersion)
+  if (parts.length < 2) return false;
+
+  const seenMetrics = new Set<string>();
+  const foundMandatory = new Set<string>();
+
+  // Validate each metric (skip the version prefix at index 0)
+  for (let i = 1; i < parts.length; i++) {
+    const part = parts[i];
+    const colonPos = part.indexOf(":");
+    if (colonPos <= 0) return false;
+
+    const metricAbbr = part.slice(0, colonPos);
+    const valueAbbr = part.slice(colonPos + 1);
+
+    // Check if metric exists
+    if (!metricMap[metricAbbr]) return false;
+
+    // Check if value is valid for this metric
+    if (!metricValueMap[metricAbbr]?.[valueAbbr]) return false;
+
+    // Check for duplicates
+    if (seenMetrics.has(metricAbbr)) return false;
+    seenMetrics.add(metricAbbr);
+
+    // Track mandatory metrics
+    if (mandatoryMetrics.has(metricAbbr)) {
+      foundMandatory.add(metricAbbr);
+    }
   }
 
-  for (const regex of cache.mandatoryChecks) {
-    if ((vector.match(regex) || []).length < 1) return false;
-  }
+  // Check all mandatory metrics are present
+  if (foundMandatory.size !== mandatoryMetrics.size) return false;
 
   return true;
 }
