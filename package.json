@@ -1,5 +1,5 @@
 {
-  "name": "@turingsecure/cvss.js",
+  "name": "@turingpointde/cvss.js",
   "version": "2.1.0",
   "description": "A tiny library to work with cvss vectors",
   "browser": "dist/index.js",
