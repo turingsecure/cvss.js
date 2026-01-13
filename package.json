@@ -15,7 +15,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/turingpointde/cvss.js.git"
+    "url": "git+https://github.com/turingpointde/cvss.js.git"
   },
   "bugs": "https://github.com/turingpointde/cvss.js/issues"
 }
