@@ -1,5 +1,5 @@
 {
-  "name": "@turingpointde/cvss.js",
+  "name": "@turingsecure/cvss.js",
   "version": "2.1.0",
   "description": "A tiny library to work with cvss vectors",
   "browser": "dist/index.js",
@@ -15,7 +15,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/turingpointde/cvss.js.git"
+    "url": "git+https://github.com/turingsecure/cvss.js.git"
   },
-  "bugs": "https://github.com/turingpointde/cvss.js/issues"
+  "bugs": "https://github.com/turingsecure/cvss.js/issues"
 }
